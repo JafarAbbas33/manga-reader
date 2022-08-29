@@ -34,7 +34,7 @@ class MyHomePage extends StatefulWidget {
 // -------------------------------------------------------------------------------------------------------------------------------
 
 class _MyHomePageState extends State<MyHomePage> {
-  final Directory _photoDir = Directory('/home/jafarabbas33/Documents/New folder');
+  Directory _photoDir = Directory('/home/jafarabbas33/Documents/New folder');
   List<Image> mangaPagesList = [];
   late ScrollController scrollController;
 
@@ -92,7 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     // debugPrint(imageList.toString());
     int maxWidth = getMaxWidth(imageList);
-    // debugPrint(maxWidth.toString());
+    debugPrint(maxWidth.toString());
 
     // -----------------------------------------------------------------------------------------
 
@@ -100,18 +100,35 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Colors.black,
         appBar: AppBar(
           title: const Text('Manga Reader'),
+          leading: IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: (() async {
+              ClipboardData? data = await Clipboard.getData(Clipboard.kTextPlain);
+              String text = data?.text ?? '';
+
+              if (text.contains('/')) {
+                setState(() {
+                  _photoDir = Directory(text);
+                  // if (text.endsWith('cbz') || text.endsWith('jpg')) {
+                  //   // debugPrint(text.endsWith('cbz') || text.endsWith('cbz'));
+                  // }
+                });
+              }
+            }),
+          ),
         ),
-        body: SizedBox(
-            width: maxWidth.toDouble(),
+        body: Center(
             child: MediaQuery.removePadding(
-              context: context,
-              removeTop: true,
-              child: ListView.builder(
-                  controller: scrollController,
-                  itemCount: imageList.length,
-                  itemBuilder: (context, i) {
-                    return Image.file(File(imageList[i]));
-                  }),
-            )));
+          context: context,
+          removeTop: true,
+          child: ListView.builder(
+              controller: scrollController,
+              itemCount: imageList.length,
+              itemBuilder: (context, i) {
+                File file = File(imageList[i]);
+                double imageHeight = ImageSizeGetter.getSize(FileInput(file)).height.toDouble();
+                return SizedBox(width: maxWidth.toDouble(), height: imageHeight, child: Image.file(file));
+              }),
+        )));
   }
 }
