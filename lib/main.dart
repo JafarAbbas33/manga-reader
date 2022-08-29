@@ -130,7 +130,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('Rebuilding home page... $isFullScreen');
+    debugPrint('Rebuilding home page...');
     List<String> imageList = _photoDir.listSync().map((item) => item.path).where((item) => item.endsWith(".jpg") || item.endsWith(".png")).toList(growable: false);
 
     imageList.sort((a, b) => lexSorter(a, b));
@@ -159,15 +159,14 @@ class _MyHomePageState extends State<MyHomePage> {
     // debugPrint('--000-- ${image.width} || ${image.height}');
 
     return Scaffold(
-        // floatingActionButtonLocation: FloatingActionButtonLocation.,
         floatingActionButton: (!isFullScreen)
             ? FloatingActionButton(
-                // isExtended: true,
-                // backgroundColor: Colors.green,
                 onPressed: () {
                   // setState(() {});
+                  if (_photoDir.existsSync() && _photoDir.path.startsWith('/tmp')) {
+                    // _photoDir.delete(recursive: true);
+                  }
                 },
-                // isExtended: true,
                 child: const Icon(Icons.settings),
               )
             : null,
