@@ -1,9 +1,11 @@
 import 'dart:io';
 import 'dart:ui';
+import 'package:archive/archive_io.dart';
 import 'package:flutter/services.dart';
 import 'package:image_size_getter/file_input.dart';
 import 'package:image_size_getter/image_size_getter.dart';
 import 'package:flutter/material.dart';
+import 'package:window_manager/window_manager.dart';
 
 void main() {
   runApp(const MyApp());
@@ -40,6 +42,7 @@ class _MyHomePageState extends State<MyHomePage> {
   double scrollSpeed = 200.0;
   List<Image> mangaPagesList = [];
   late ScrollController scrollController;
+  bool isFullScreen = false;
 
   int toInteger(String value) {
     return int.parse(value.split('/').last.replaceAll(RegExp(r'[^0-9]'), ''));
@@ -83,6 +86,8 @@ class _MyHomePageState extends State<MyHomePage> {
     // int currentScrollPosition
 
     window.onKeyData = (final keyData) {
+      // debugPrint('${keyData.logical} ******************************************');
+
       if (keyData.logical == LogicalKeyboardKey.space.keyId && keyData.type == KeyEventType.down) {
         scrollController.animateTo(scrollController.position.pixels + scrollSpeed, duration: const Duration(milliseconds: 500), curve: Curves.fastOutSlowIn);
         return true;
@@ -94,6 +99,14 @@ class _MyHomePageState extends State<MyHomePage> {
           sizeIncrease -= 0.1;
         });
       }
+      // 'f' pressed
+      else if (keyData.logical == 102 && keyData.type == KeyEventType.down) {
+        debugPrint('f Pressed');
+        WindowManager.instance.isFullScreen().then((value) {
+          isFullScreen = !value;
+          WindowManager.instance.setFullScreen(!value);
+        });
+      }
       // '-' pressed
       else if (keyData.logical == 45 && keyData.type == KeyEventType.down) {
         setState(() {
@@ -103,24 +116,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
         return true;
       }
-      // debugPrint(keyData.logical.toString());
-      // debugPrint(keyData.physical.toString());
-
-      // RawKeyboardListener(
-      //   focusNode: fc,
-      //   autofocus: true,
-      //   onKey: (event) {
-      //     if (event.isKeyPressed(LogicalKeyboardKey.controlLeft)) {
-      //       if (event is RawKeyDownEvent) {
-      //         _isCTRLPressed = true;
-      //       }
-      //     } else {
-      //       _isCTRLPressed = false;
-      //     }
-      //   },
-      //   child:
-
-      // PhysicalKeyboardKey.
       return false;
     };
 
@@ -135,7 +130,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // debugPrint('Rebuilding home page...');
+    debugPrint('Rebuilding home page... $isFullScreen');
     List<String> imageList = _photoDir.listSync().map((item) => item.path).where((item) => item.endsWith(".jpg") || item.endsWith(".png")).toList(growable: false);
 
     imageList.sort((a, b) => lexSorter(a, b));
@@ -164,60 +159,103 @@ class _MyHomePageState extends State<MyHomePage> {
     // debugPrint('--000-- ${image.width} || ${image.height}');
 
     return Scaffold(
+        // floatingActionButtonLocation: FloatingActionButtonLocation.,
+        floatingActionButton: (!isFullScreen)
+            ? FloatingActionButton(
+                // isExtended: true,
+                // backgroundColor: Colors.green,
+                onPressed: () {
+                  // setState(() {});
+                },
+                // isExtended: true,
+                child: const Icon(Icons.settings),
+              )
+            : null,
         backgroundColor: Colors.black,
-        appBar: AppBar(
-          title: const Text('Manga Reader'),
-          leading: IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: (() async {
-              ClipboardData? data = await Clipboard.getData(Clipboard.kTextPlain);
-              String path = data?.text ?? '';
+        appBar: (!isFullScreen)
+            ? AppBar(
+                title: const Text('Manga Reader'),
+                leading: IconButton(
+                  icon: const Icon(Icons.add),
+                  onPressed: (() async {
+                    ClipboardData? data = await Clipboard.getData(Clipboard.kTextPlain);
+                    String path = data?.text ?? '';
 
-              String snackBarText = 'Exists!';
-              if (await Directory(path).exists()) {
-                snackBarText = 'Exists!';
+                    String snackBarText = 'Exists!';
+                    if (await Directory(path).exists()) {
+                      snackBarText = 'Exists!';
 
-                setState(() {
-                  _photoDir = Directory(path);
+                      setState(() {
+                        _photoDir = Directory(path);
+                      });
 
-                  // if (text.endsWith('cbz') || text.endsWith('jpg')) {
-                  //   // debugPrint(text.endsWith('cbz') || text.endsWith('cbz'));
-                  // }
-                });
-              } else {
-                snackBarText = 'Does not exist!';
-              }
-              SnackBar snackBar = SnackBar(
-                content: Text(snackBarText),
-              );
-              ScaffoldMessenger.of(context).showSnackBar(snackBar);
-            }),
-          ),
-        ),
+                      // if (text.endsWith('cbz') || text.endsWith('jpg')) {
+                      //   // debugPrint(text.endsWith('cbz') || text.endsWith('cbz'));
+                      // }
+                    } else if (File(path).existsSync()) {
+                      if (path.endsWith('.cbz')) {
+                        final bytes = File(path).readAsBytesSync();
+
+                        // Decode the Zip file
+                        final archive = ZipDecoder().decodeBytes(bytes);
+
+                        // Extract the contents of the Zip archive to disk.
+                        final String targetDir = '/tmp/manga_reader/${path.split('/').last}';
+                        for (final file in archive) {
+                          final filename = file.name;
+                          String targetPath = '$targetDir/$filename';
+                          if (file.isFile) {
+                            final data = file.content as List<int>;
+                            File(targetPath)
+                              ..createSync(recursive: true)
+                              ..writeAsBytesSync(data);
+                          } else {
+                            Directory dir = Directory(targetPath);
+                            dir.create(recursive: true);
+                            debugPrint('888: ${dir.absolute.path}');
+                            snackBarText = 'Does not exist!';
+                          }
+                          setState(() {
+                            _photoDir = Directory(targetDir);
+                          });
+                        }
+                        // path =
+                      }
+                    } else {
+                      snackBarText = 'Does not exist!';
+                    }
+                    SnackBar snackBar = SnackBar(
+                      content: Text(snackBarText),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  }),
+                ),
+              )
+            : null,
         body: Container(
-            color: Colors.blueGrey,
+            // color: Colors.blueGrey,
             // padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width - maxWidth.toDouble()),
             child: MediaQuery.removePadding(
-              context: context,
-              removeTop: true,
-              child:
-                  // Expanded(
-                  //   child:
-                  ListView.builder(
-                      shrinkWrap: true,
-                      controller: scrollController,
-                      itemCount: imageList.length,
-                      itemBuilder: (context, i) {
-                        File file = File(imageList[i]);
+          context: context,
+          removeTop: true,
+          child:
+              // Expanded(
+              //   child:
+              ListView.builder(
+                  shrinkWrap: true,
+                  controller: scrollController,
+                  itemCount: imageList.length,
+                  itemBuilder: (context, i) {
+                    File file = File(imageList[i]);
 
-                        return MyWidget(file: file, maxWidth: maxWidth);
-                        // return Image.file(
-                        //   file,
-                        //   scale: sizeIncrease,
-                        // );
-                      }),
-              // )
-            )));
+                    return MyWidget(file: file, maxWidth: maxWidth);
+                    // return Image.file(
+                    //   file,
+                    //   scale: sizeIncrease,
+                    // );
+                  }),
+          // )
+        )));
   }
 }
 
@@ -250,16 +288,18 @@ class _MyWidgetState extends State<MyWidget> {
     //     height: size.height.toDouble(),
     //     child:
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 270),
-      decoration: BoxDecoration(
-        color: Colors.deepPurpleAccent,
-        border: Border.all(),
-      ),
+      margin: EdgeInsets.symmetric(horizontal: 200 * sizeIncrease),
+      // decoration: BoxDecoration(
+      //   color: Colors.deepPurpleAccent,
+      //   border: Border.all(),
+      // ),
       child: Image.file(
         widget.file,
+        filterQuality: FilterQuality.high,
+        isAntiAlias: true,
         // width: newSize.width.toDouble(),
         // height: newSize.height.toDouble(),
-        scale: sizeIncrease,
+        scale: 0.5,
       ),
     );
     // );
