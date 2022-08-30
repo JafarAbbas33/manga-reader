@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
 import 'package:archive/archive_io.dart';
+import 'package:desktop_drop/desktop_drop.dart';
 import 'package:flutter/services.dart';
 import 'package:image_size_getter/file_input.dart';
 import 'package:image_size_getter/image_size_getter.dart';
@@ -39,7 +40,7 @@ double sizeIncrease = 1.5;
 
 class _MyHomePageState extends State<MyHomePage> {
   Directory _photoDir = Directory('/home/jafarabbas33/Documents/New folder');
-  double scrollSpeed = 200.0;
+  double scrollSpeed = 500.0;
   List<Image> mangaPagesList = [];
   late ScrollController scrollController;
   bool isFullScreen = false;
@@ -231,30 +232,36 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               )
             : null,
-        body: Container(
+        body: DropTarget(
+            onDragDone: (detail) {
+              setState(() {
+                debugPrint('*************************************************************${detail.files.length}');
+                debugPrint('*************************************************************${detail.files[0].path}');
+              });
+            },
             // color: Colors.blueGrey,
             // padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width - maxWidth.toDouble()),
             child: MediaQuery.removePadding(
-          context: context,
-          removeTop: true,
-          child:
-              // Expanded(
-              //   child:
-              ListView.builder(
-                  shrinkWrap: true,
-                  controller: scrollController,
-                  itemCount: imageList.length,
-                  itemBuilder: (context, i) {
-                    File file = File(imageList[i]);
+              context: context,
+              removeTop: true,
+              child:
+                  // Expanded(
+                  //   child:
+                  ListView.builder(
+                      shrinkWrap: true,
+                      controller: scrollController,
+                      itemCount: imageList.length,
+                      itemBuilder: (context, i) {
+                        File file = File(imageList[i]);
 
-                    return MyWidget(file: file, maxWidth: maxWidth);
-                    // return Image.file(
-                    //   file,
-                    //   scale: sizeIncrease,
-                    // );
-                  }),
-          // )
-        )));
+                        return MyWidget(file: file, maxWidth: maxWidth);
+                        // return Image.file(
+                        //   file,
+                        //   scale: sizeIncrease,
+                        // );
+                      }),
+              // )
+            )));
   }
 }
 
