@@ -47,6 +47,7 @@ dependencies:
   hooks_riverpod: ^1.0.4
   flutter_hooks: ^0.18.5+1
   flutter_hooks_lint_plugin: ^0.5.2
+  scrollable_positioned_list: ^0.3.2
   # desktop_drop: ^0.3.3
 
 dev_dependencies:

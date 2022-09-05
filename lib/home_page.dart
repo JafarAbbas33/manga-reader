@@ -8,9 +8,11 @@ import 'package:image_size_getter/file_input.dart';
 import 'package:image_size_getter/image_size_getter.dart';
 import 'package:flutter/material.dart';
 import 'package:manga_reader/key_binding_events.dart';
+import 'package:manga_reader/manga_reader_debug_print.dart';
 import 'package:manga_reader/providers.dart';
 import 'package:manga_reader/manga_image.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 // -------------------------------------------------------------------------------------------------------------------------------
 
@@ -63,14 +65,23 @@ class MyHomePage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    ScrollController scrollController = useScrollController();
+    ItemScrollController itemScrollController = useMemoized(() {
+      mangaReaderDebugPrint('Creting controller...');
+      return ItemScrollController();
+    });
+
+    ItemPositionsListener itemPositionsListener = useMemoized(() {
+      mangaReaderDebugPrint('Creting controller...');
+      return ItemPositionsListener.create();
+    });
+
     final mangaImagesDirectory = ref.watch(mangaImagesDirectoryProvider.state);
     final fullScreen = ref.watch(fullScreenProvider.state);
     final mangaImageSize = ref.watch(mangaImageSizeProvider.state);
 
     useEffect(
       () {
-        bindKeys(window, ref, scrollController);
+        bindKeys(window, ref, itemScrollController, itemPositionsListener);
 
         return null;
       },
@@ -88,7 +99,7 @@ class MyHomePage extends HookConsumerWidget {
 
     // -----------------------------------------------------------------------------------------
 
-    debugPrint('---- MINUS: ${MediaQuery.of(context).size.width - maxWidth.toDouble()} || NEW: ${MediaQuery.of(context).size.width} ---- || PATH: ${maxWidth.toDouble()}');
+    // debugPrint('---- MINUS: ${MediaQuery.of(context).size.width - maxWidth.toDouble()} || NEW: ${MediaQuery.of(context).size.width} ---- || PATH: ${maxWidth.toDouble()}');
 
     // Image image = Image.file(File(imageList[0]), scale: 1.9);
     // Completer<Size> completer = Completer();
@@ -193,9 +204,11 @@ class MyHomePage extends HookConsumerWidget {
               child:
                   // Expanded(
                   //   child:
-                  ListView.builder(
+                  ScrollablePositionedList.builder(
+                      minCacheExtent: 3000.0,
                       shrinkWrap: true,
-                      controller: scrollController,
+                      itemScrollController: itemScrollController,
+                      itemPositionsListener: itemPositionsListener,
                       itemCount: imageList.length,
                       itemBuilder: (context, i) {
                         File file = File(imageList[i]);

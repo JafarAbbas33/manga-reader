@@ -33,8 +33,8 @@ class MangaImage extends HookConsumerWidget {
 
     Size newSize = getNewSize(size, mangaImageSize.state);
 
-    debugPrint('---- OLD: $imageHeight || NEW: ${newSize.height} ---- || PATH: ${file.path} || INC: ${mangaImageSize.state}');
-    debugPrint('---- SB_W: ${maxWidth.toDouble()} || SB_H: ${newSize.height.toDouble()} ---- || IM_W: ${newSize.width.toDouble()} || IM_H: ${newSize.height.toDouble()}');
+    // debugPrint('---- OLD: $imageHeight || NEW: ${newSize.height} ---- || PATH: ${file.path} || INC: ${mangaImageSize.state}');
+    // debugPrint('---- SB_W: ${maxWidth.toDouble()} || SB_H: ${newSize.height.toDouble()} ---- || IM_W: ${newSize.width.toDouble()} || IM_H: ${newSize.height.toDouble()}');
 
     // return SizedBox(
     //     width: widget.maxWidth.toDouble(),
