@@ -21,6 +21,6 @@ final scrollSpeedProvider = StateProvider((ref) {
   return _scrollSpeed;
 });
 
-final mangaImagesDirectoryProvider = StateProvider((ref) {
-  return MangaReaderState.mangaImagesDirectory;
+final mangaImagesListProvider = StateProvider((ref) {
+  return MangaReaderState.mangaImagesList;
 });
