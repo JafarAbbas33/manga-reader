@@ -10,17 +10,33 @@ import 'package:window_manager/window_manager.dart';
 
 void bindKeys(final window, final WidgetRef ref, ScrollController scrollController) {
   final fullScreen = ref.watch(fullScreenProvider.state);
-  final scrollSpeed = ref.watch(scrollSpeedProvider.state);
+  final scrollSpeed = ref.read(scrollSpeedProvider.state);
+  final fasterScrollSpeed = ref.read(fasterScrollSpeedProvider.state);
   final mangaImageSize = ref.watch(mangaImageSizeProvider.state);
 
   window.onKeyData = (final keyData) {
     debugPrint('${keyData.logical} ******************************************');
 
-    if (keyData.logical == LogicalKeyboardKey.space.keyId && keyData.type == KeyEventType.down) {
-      MangaReaderState.currentScrollPosition = scrollController.position.pixels + scrollSpeed.state;
-      mangaReaderDebugPrint(MangaReaderState.currentScrollPosition);
+    // 'space' or 'down' pressed
+    if ((keyData.logical == LogicalKeyboardKey.space.keyId || keyData.logical == LogicalKeyboardKey.arrowDown.keyId) && keyData.type == KeyEventType.down) {
       scrollController.animateTo(scrollController.position.pixels + scrollSpeed.state, duration: const Duration(milliseconds: 500), curve: Curves.fastOutSlowIn);
       return true;
+    }
+
+    // 'up' pressed 4294968065
+    if (keyData.logical == LogicalKeyboardKey.arrowUp.keyId && keyData.type == KeyEventType.down) {
+      scrollController.animateTo(scrollController.position.pixels - scrollSpeed.state, duration: const Duration(milliseconds: 500), curve: Curves.fastOutSlowIn);
+      return true;
+    }
+
+    // 'page down' pressed
+    else if (keyData.logical == 4294968071 && keyData.type == KeyEventType.down) {
+      scrollController.animateTo(scrollController.position.pixels + fasterScrollSpeed.state, duration: const Duration(milliseconds: 300), curve: Curves.fastOutSlowIn);
+    }
+
+    // 'page up' pressed
+    else if (keyData.logical == 4294968072 && keyData.type == KeyEventType.down) {
+      scrollController.animateTo(scrollController.position.pixels - fasterScrollSpeed.state, duration: const Duration(milliseconds: 300), curve: Curves.fastOutSlowIn);
     }
 
     // 'home' pressed
@@ -49,6 +65,10 @@ void bindKeys(final window, final WidgetRef ref, ScrollController scrollControll
     // '+' pressed
     else if (keyData.logical == 61 && keyData.type == KeyEventType.down) {
       mangaImageSize.state -= 0.1;
+      // setState(() {
+      //   debugPrint('+ Pressed');
+      //   sizeIncrease
+      // });
     }
 
     // 'f' pressed
@@ -63,6 +83,10 @@ void bindKeys(final window, final WidgetRef ref, ScrollController scrollControll
     // '-' pressed
     else if (keyData.logical == 45 && keyData.type == KeyEventType.down) {
       mangaImageSize.state += 0.1;
+      // setState(() {
+      //   debugPrint('- Pressed');
+      //   sizeIncrease += 0.1;
+      // });
 
       return true;
     }

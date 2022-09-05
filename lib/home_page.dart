@@ -8,11 +8,9 @@ import 'package:image_size_getter/file_input.dart';
 import 'package:image_size_getter/image_size_getter.dart';
 import 'package:flutter/material.dart';
 import 'package:manga_reader/key_binding_events.dart';
-import 'package:manga_reader/manga_reader_debug_print.dart';
 import 'package:manga_reader/providers.dart';
 import 'package:manga_reader/manga_image.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 // -------------------------------------------------------------------------------------------------------------------------------
 
@@ -65,23 +63,14 @@ class MyHomePage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    ItemScrollController itemScrollController = useMemoized(() {
-      mangaReaderDebugPrint('Creting controller...');
-      return ItemScrollController();
-    });
-
-    ItemPositionsListener itemPositionsListener = useMemoized(() {
-      mangaReaderDebugPrint('Creting controller...');
-      return ItemPositionsListener.create();
-    });
-
+    ScrollController scrollController = useScrollController();
     final mangaImagesDirectory = ref.watch(mangaImagesDirectoryProvider.state);
     final fullScreen = ref.watch(fullScreenProvider.state);
     final mangaImageSize = ref.watch(mangaImageSizeProvider.state);
 
     useEffect(
       () {
-        bindKeys(window, ref, itemScrollController, itemPositionsListener);
+        bindKeys(window, ref, scrollController);
 
         return null;
       },
@@ -150,7 +139,7 @@ class MyHomePage extends HookConsumerWidget {
                       //   // debugPrint(text.endsWith('cbz') || text.endsWith('cbz'));
                       // }
                     } else if (File(path).existsSync()) {
-                      if (path.endsWith('.cbz')) {
+                      if (path.endsWith('.cbz') || path.endsWith('.zip')) {
                         final bytes = File(path).readAsBytesSync();
 
                         // Decode the Zip file
@@ -170,7 +159,7 @@ class MyHomePage extends HookConsumerWidget {
                             Directory dir = Directory(targetPath);
                             dir.create(recursive: true);
                             debugPrint('888: ${dir.absolute.path}');
-                            snackBarText = 'Does not exist!';
+                            snackBarText = 'Does not exist 0!';
                           }
                           // setState(() {
                           mangaImagesDirectory.state = Directory(targetDir);
@@ -179,7 +168,7 @@ class MyHomePage extends HookConsumerWidget {
                         // path =
                       }
                     } else {
-                      snackBarText = 'Does not exist!';
+                      snackBarText = 'Does not exist 1!';
                     }
                     SnackBar snackBar = SnackBar(
                       content: Text(snackBarText),
@@ -204,11 +193,9 @@ class MyHomePage extends HookConsumerWidget {
               child:
                   // Expanded(
                   //   child:
-                  ScrollablePositionedList.builder(
-                      minCacheExtent: 3000.0,
+                  ListView.builder(
                       shrinkWrap: true,
-                      itemScrollController: itemScrollController,
-                      itemPositionsListener: itemPositionsListener,
+                      controller: scrollController,
                       itemCount: imageList.length,
                       itemBuilder: (context, i) {
                         File file = File(imageList[i]);
