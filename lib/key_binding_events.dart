@@ -65,10 +65,6 @@ void bindKeys(final window, final WidgetRef ref, ScrollController scrollControll
     // '+' pressed
     else if (keyData.logical == 61 && keyData.type == KeyEventType.down) {
       mangaImageSize.state -= 0.1;
-      // setState(() {
-      //   debugPrint('+ Pressed');
-      //   sizeIncrease
-      // });
     }
 
     // 'f' pressed
@@ -83,10 +79,6 @@ void bindKeys(final window, final WidgetRef ref, ScrollController scrollControll
     // '-' pressed
     else if (keyData.logical == 45 && keyData.type == KeyEventType.down) {
       mangaImageSize.state += 0.1;
-      // setState(() {
-      //   debugPrint('- Pressed');
-      //   sizeIncrease += 0.1;
-      // });
 
       return true;
     }

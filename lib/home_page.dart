@@ -12,8 +12,6 @@ import 'package:manga_reader/providers.dart';
 import 'package:manga_reader/manga_image.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-// -------------------------------------------------------------------------------------------------------------------------------
-
 class MyHomePage extends HookConsumerWidget {
   const MyHomePage({Key? key}) : super(key: key);
 
@@ -36,26 +34,13 @@ class MyHomePage extends HookConsumerWidget {
   }
 
   int getMaxWidth(List<String> imageList, mangaImageSize) {
-    // final size = ImageSizeGetter.getSize(FileInput(File(imageList[0])));
     int max = 999990;
-    // int width = 0;
 
     for (int i = 0; i < imageList.length; ++i) {
       Size size = ImageSizeGetter.getSize(FileInput(File(imageList[i])));
       Size newSize = getNewSize(size, mangaImageSize);
 
-      // double newWidth = size.width * sizeIncrease;
-      // double widthChangePercent = (newWidth / size.width);
-      // double newHeight = size.height * widthChangePercent;
-
-      // final double aspectRatio = size.height / size.width;
-      // int newWidth = size.height
-
-      // double imageHeight = size.height.toDouble();
-      // double imageWidth = size.width.toDouble();
-
       if (max > newSize.width) max = newSize.width.toInt();
-      //Image.file(File(imageList[i])).width.toString());
     }
 
     return max;
@@ -82,34 +67,12 @@ class MyHomePage extends HookConsumerWidget {
 
     imageList.sort((a, b) => lexSorter(a, b));
 
-    // debugPrint(imageList.toString());
     int maxWidth = getMaxWidth(imageList, mangaImageSize.state);
-    // debugPrint(maxWidth.toString());
-
-    // -----------------------------------------------------------------------------------------
-
-    // debugPrint('---- MINUS: ${MediaQuery.of(context).size.width - maxWidth.toDouble()} || NEW: ${MediaQuery.of(context).size.width} ---- || PATH: ${maxWidth.toDouble()}');
-
-    // Image image = Image.file(File(imageList[0]), scale: 1.9);
-    // Completer<Size> completer = Completer();
-    // image.image.resolve(const ImageConfiguration()).addListener(
-    //   ImageStreamListener(
-    //     (ImageInfo image, bool synchronousCall) {
-    //       var myImage = image.image;
-    //       Size size = Size(myImage.width, myImage.height);
-    //       debugPrint('--00-- ${myImage.width} || ${myImage.height}');
-    //       completer.complete(size);
-    //     },
-    //   ),
-    // );
-
-    // debugPrint('--000-- ${image.width} || ${image.height}');
 
     return Scaffold(
       floatingActionButton: (!fullScreen.state)
           ? FloatingActionButton(
               onPressed: () {
-                // setState(() {});
                 if (mangaImagesDirectory.state.existsSync() && mangaImagesDirectory.state.path.startsWith('/tmp')) {
                   // _photoDir.delete(recursive: true);
                 }
@@ -131,13 +94,7 @@ class MyHomePage extends HookConsumerWidget {
                   if (await Directory(path).exists()) {
                     snackBarText = 'Exists!';
 
-                    // setState(() {
                     mangaImagesDirectory.state = Directory(path);
-                    // });
-
-                    // if (text.endsWith('cbz') || text.endsWith('jpg')) {
-                    //   // debugPrint(text.endsWith('cbz') || text.endsWith('cbz'));
-                    // }
                   } else if (File(path).existsSync()) {
                     if (path.endsWith('.cbz') || path.endsWith('.zip')) {
                       final bytes = File(path).readAsBytesSync();
@@ -161,11 +118,8 @@ class MyHomePage extends HookConsumerWidget {
                           debugPrint('888: ${dir.absolute.path}');
                           snackBarText = 'Does not exist 0!';
                         }
-                        // setState(() {
                         mangaImagesDirectory.state = Directory(targetDir);
-                        // });
                       }
-                      // path =
                     }
                   } else {
                     snackBarText = 'Does not exist 1!';
@@ -180,36 +134,19 @@ class MyHomePage extends HookConsumerWidget {
           : null,
       body: DropTarget(
         onDragDone: (detail) {
-          // setState(() {
           debugPrint('*************************************************************${detail.files.length}');
           debugPrint('*************************************************************${detail.files[0].path}');
-          // });
         },
-        // color: Colors.blueGrey,
-        // padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width - maxWidth.toDouble()),
-        child:
-            // MediaQuery.removePadding(
-            //   context: context,
-            //   removeTop: true,
-            //   child:
-            // Expanded(
-            //   child:
-            ListView.builder(
-                shrinkWrap: true,
-                controller: scrollController,
-                itemCount: imageList.length,
-                itemBuilder: (context, i) {
-                  File file = File(imageList[i]);
+        child: ListView.builder(
+            shrinkWrap: true,
+            controller: scrollController,
+            itemCount: imageList.length,
+            itemBuilder: (context, i) {
+              File file = File(imageList[i]);
 
-                  return MangaImage(file: file, maxWidth: maxWidth);
-                  // return Image.file(
-                  //   file,
-                  //   scale: sizeIncrease,
-                  // );
-                }),
-        // )
+              return MangaImage(file: file, maxWidth: maxWidth);
+            }),
       ),
-      // ),
     );
   }
 }

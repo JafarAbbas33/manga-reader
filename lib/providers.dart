@@ -1,5 +1,5 @@
 import 'package:manga_reader/manga_reader_state.dart';
-import 'package:riverpod/riverpod.dart';
+import 'package:riverpod/riverpod.dart' show StateProvider;
 
 double _mangaImageSize = 1.5;
 final mangaImageSizeProvider = StateProvider((ref) {
