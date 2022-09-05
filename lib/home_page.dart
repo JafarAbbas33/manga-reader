@@ -106,107 +106,110 @@ class MyHomePage extends HookConsumerWidget {
     // debugPrint('--000-- ${image.width} || ${image.height}');
 
     return Scaffold(
-        floatingActionButton: (!fullScreen.state)
-            ? FloatingActionButton(
-                onPressed: () {
-                  // setState(() {});
-                  if (mangaImagesDirectory.state.existsSync() && mangaImagesDirectory.state.path.startsWith('/tmp')) {
-                    // _photoDir.delete(recursive: true);
-                  }
-                },
-                child: const Icon(Icons.settings),
-              )
-            : null,
-        backgroundColor: Colors.black,
-        appBar: (!fullScreen.state)
-            ? AppBar(
-                title: const Text('Manga Reader'),
-                leading: IconButton(
-                  icon: const Icon(Icons.add),
-                  onPressed: (() async {
-                    ClipboardData? data = await Clipboard.getData(Clipboard.kTextPlain);
-                    String path = data?.text ?? '';
+      floatingActionButton: (!fullScreen.state)
+          ? FloatingActionButton(
+              onPressed: () {
+                // setState(() {});
+                if (mangaImagesDirectory.state.existsSync() && mangaImagesDirectory.state.path.startsWith('/tmp')) {
+                  // _photoDir.delete(recursive: true);
+                }
+              },
+              child: const Icon(Icons.settings),
+            )
+          : null,
+      backgroundColor: Colors.black,
+      appBar: (!fullScreen.state)
+          ? AppBar(
+              title: const Text('Manga Reader'),
+              leading: IconButton(
+                icon: const Icon(Icons.add),
+                onPressed: (() async {
+                  ClipboardData? data = await Clipboard.getData(Clipboard.kTextPlain);
+                  String path = data?.text ?? '';
 
-                    String snackBarText = 'Exists!';
-                    if (await Directory(path).exists()) {
-                      snackBarText = 'Exists!';
+                  String snackBarText = 'Exists!';
+                  if (await Directory(path).exists()) {
+                    snackBarText = 'Exists!';
 
-                      // setState(() {
-                      mangaImagesDirectory.state = Directory(path);
-                      // });
+                    // setState(() {
+                    mangaImagesDirectory.state = Directory(path);
+                    // });
 
-                      // if (text.endsWith('cbz') || text.endsWith('jpg')) {
-                      //   // debugPrint(text.endsWith('cbz') || text.endsWith('cbz'));
-                      // }
-                    } else if (File(path).existsSync()) {
-                      if (path.endsWith('.cbz') || path.endsWith('.zip')) {
-                        final bytes = File(path).readAsBytesSync();
+                    // if (text.endsWith('cbz') || text.endsWith('jpg')) {
+                    //   // debugPrint(text.endsWith('cbz') || text.endsWith('cbz'));
+                    // }
+                  } else if (File(path).existsSync()) {
+                    if (path.endsWith('.cbz') || path.endsWith('.zip')) {
+                      final bytes = File(path).readAsBytesSync();
 
-                        // Decode the Zip file
-                        final archive = ZipDecoder().decodeBytes(bytes);
+                      // Decode the Zip file
+                      final archive = ZipDecoder().decodeBytes(bytes);
 
-                        // Extract the contents of the Zip archive to disk.
-                        final String targetDir = '/tmp/manga_reader/${path.split('/').last}';
-                        for (final file in archive) {
-                          final filename = file.name;
-                          String targetPath = '$targetDir/$filename';
-                          if (file.isFile) {
-                            final data = file.content as List<int>;
-                            File(targetPath)
-                              ..createSync(recursive: true)
-                              ..writeAsBytesSync(data);
-                          } else {
-                            Directory dir = Directory(targetPath);
-                            dir.create(recursive: true);
-                            debugPrint('888: ${dir.absolute.path}');
-                            snackBarText = 'Does not exist 0!';
-                          }
-                          // setState(() {
-                          mangaImagesDirectory.state = Directory(targetDir);
-                          // });
+                      // Extract the contents of the Zip archive to disk.
+                      final String targetDir = '/tmp/manga_reader/${path.split('/').last}';
+                      for (final file in archive) {
+                        final filename = file.name;
+                        String targetPath = '$targetDir/$filename';
+                        if (file.isFile) {
+                          final data = file.content as List<int>;
+                          File(targetPath)
+                            ..createSync(recursive: true)
+                            ..writeAsBytesSync(data);
+                        } else {
+                          Directory dir = Directory(targetPath);
+                          dir.create(recursive: true);
+                          debugPrint('888: ${dir.absolute.path}');
+                          snackBarText = 'Does not exist 0!';
                         }
-                        // path =
+                        // setState(() {
+                        mangaImagesDirectory.state = Directory(targetDir);
+                        // });
                       }
-                    } else {
-                      snackBarText = 'Does not exist 1!';
+                      // path =
                     }
-                    SnackBar snackBar = SnackBar(
-                      content: Text(snackBarText),
-                    );
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  }),
-                ),
-              )
-            : null,
-        body: DropTarget(
-            onDragDone: (detail) {
-              // setState(() {
-              debugPrint('*************************************************************${detail.files.length}');
-              debugPrint('*************************************************************${detail.files[0].path}');
-              // });
-            },
-            // color: Colors.blueGrey,
-            // padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width - maxWidth.toDouble()),
-            child: MediaQuery.removePadding(
-              context: context,
-              removeTop: true,
-              child:
-                  // Expanded(
-                  //   child:
-                  ListView.builder(
-                      shrinkWrap: true,
-                      controller: scrollController,
-                      itemCount: imageList.length,
-                      itemBuilder: (context, i) {
-                        File file = File(imageList[i]);
+                  } else {
+                    snackBarText = 'Does not exist 1!';
+                  }
+                  SnackBar snackBar = SnackBar(
+                    content: Text(snackBarText),
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                }),
+              ),
+            )
+          : null,
+      body: DropTarget(
+        onDragDone: (detail) {
+          // setState(() {
+          debugPrint('*************************************************************${detail.files.length}');
+          debugPrint('*************************************************************${detail.files[0].path}');
+          // });
+        },
+        // color: Colors.blueGrey,
+        // padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width - maxWidth.toDouble()),
+        child:
+            // MediaQuery.removePadding(
+            //   context: context,
+            //   removeTop: true,
+            //   child:
+            // Expanded(
+            //   child:
+            ListView.builder(
+                shrinkWrap: true,
+                controller: scrollController,
+                itemCount: imageList.length,
+                itemBuilder: (context, i) {
+                  File file = File(imageList[i]);
 
-                        return MangaImage(file: file, maxWidth: maxWidth);
-                        // return Image.file(
-                        //   file,
-                        //   scale: sizeIncrease,
-                        // );
-                      }),
-              // )
-            )));
+                  return MangaImage(file: file, maxWidth: maxWidth);
+                  // return Image.file(
+                  //   file,
+                  //   scale: sizeIncrease,
+                  // );
+                }),
+        // )
+      ),
+      // ),
+    );
   }
 }

@@ -40,8 +40,8 @@ class MangaImage extends HookConsumerWidget {
     //     width: widget.maxWidth.toDouble(),
     //     height: size.height.toDouble(),
     //     child:
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 200 * mangaImageSize.state),
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 200 * mangaImageSize.state),
       // decoration: BoxDecoration(
       //   color: Colors.deepPurpleAccent,
       //   border: Border.all(),
