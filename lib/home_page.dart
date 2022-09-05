@@ -7,10 +7,12 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:image_size_getter/file_input.dart';
 import 'package:image_size_getter/image_size_getter.dart';
 import 'package:flutter/material.dart';
+import 'package:manga_reader/config.dart';
 import 'package:manga_reader/key_binding_events.dart';
 import 'package:manga_reader/providers.dart';
 import 'package:manga_reader/manga_image.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:manga_reader/utils.dart';
 
 class MyHomePage extends HookConsumerWidget {
   const MyHomePage({Key? key}) : super(key: key);
@@ -76,6 +78,13 @@ class MyHomePage extends HookConsumerWidget {
                 if (mangaImagesDirectory.state.existsSync() && mangaImagesDirectory.state.path.startsWith('/tmp')) {
                   // _photoDir.delete(recursive: true);
                 }
+
+                printFromMangaReader('Called');
+                Config.loadSettings();
+                ref.refresh(mangaImageSizeProvider);
+                // MangaReaderState.saveState();
+
+                Config.mangaImageSize += 1.5;
               },
               child: const Icon(Icons.settings),
             )

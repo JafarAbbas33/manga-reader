@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:manga_reader/manga_reader_debug_print.dart';
+import 'package:manga_reader/utils.dart';
 import 'package:manga_reader/manga_reader_state.dart';
 import 'package:manga_reader/providers.dart';
 import 'package:window_manager/window_manager.dart';
@@ -50,9 +50,9 @@ void bindKeys(final window, final WidgetRef ref, ScrollController scrollControll
       for (int i = 0; i < 4; ++i) {
         // sleep(const Duration(seconds: 4));
         Future.delayed(const Duration(seconds: 4), () {
-          mangaReaderDebugPrint(tempMaxScrollPosition);
+          printFromMangaReader(tempMaxScrollPosition);
           scrollController.animateTo(tempMaxScrollPosition, duration: const Duration(milliseconds: 500), curve: Curves.fastOutSlowIn);
-          mangaReaderDebugPrint(tempMaxScrollPosition);
+          printFromMangaReader(tempMaxScrollPosition);
         });
       }
     }
