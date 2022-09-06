@@ -62,7 +62,7 @@ class MangaReaderState {
 
   static bool saveSettings() {
     try {
-      printFromMangaReader('Writing state file...');
+      printFromMangaReader('Saving state file...');
       return saveJsonFile('state.json', MangaReaderState.toJson());
     } catch (_) {
       printFromMangaReader('Error while saving state file!'); //: $e');
@@ -73,7 +73,7 @@ class MangaReaderState {
 
   static void loadSettings() {
     // try {
-    printFromMangaReader('Reading state file...');
+    printFromMangaReader('Loading state file...');
     Map<String, dynamic> data = loadJsonFile('state.json');
 
     (data.entries.isEmpty) ? printFromMangaReader('No state file found.') : MangaReaderState.fromJson(data);

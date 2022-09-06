@@ -40,6 +40,8 @@ class MyHomePage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    context_in_utils_file = context;
+
     debugPrint('Building home page...');
 
     MangaFileHandler.ref = ref;
@@ -176,38 +178,51 @@ class _PopUpDialog extends HookConsumerWidget {
             children: [
               const SizedBox(height: 10),
               _PopUpDialogOptions(
-                title: 'Load config from file',
+                title: 'Load state from file',
                 callback: () {
-                  Config.loadSettings();
+                  loadFiles();
                 },
               ),
+              // _PopUpDialogOptions(
+              //   title: 'Load config from file',
+              //   callback: () {
+              //     Config.loadSettings();
+              //   },
+              // ),
+              // const Divider(thickness: 2),
+              // _PopUpDialogOptions(
+              //   title: 'Load manga reader state from file',
+              //   callback: () {
+              //     MangaReaderState.loadSettings();
+              //   },
+              // ),
               const Divider(thickness: 2),
               _PopUpDialogOptions(
-                title: 'Load manga reader state from file',
+                title: 'Save state to file',
                 callback: () {
-                  MangaReaderState.loadSettings();
+                  saveFiles();
                 },
               ),
-              const Divider(thickness: 2),
-              _PopUpDialogOptions(
-                title: 'Save config to file',
-                callback: () {
-                  Config.saveSettings();
-                },
-              ),
-              const Divider(thickness: 2),
-              _PopUpDialogOptions(
-                title: 'Save manga reader state to file',
-                callback: () {
-                  MangaReaderState.saveSettings();
-                },
-              ),
+              // const Divider(thickness: 2),
+              // _PopUpDialogOptions(
+              //   title: 'Save config to file',
+              //   callback: () {
+              //     Config.saveSettings();
+              //   },
+              // ),
+              // const Divider(thickness: 2),
+              // _PopUpDialogOptions(
+              //   title: 'Save manga reader state to file',
+              //   callback: () {
+              //     MangaReaderState.saveSettings();
+              //   },
+              // ),
               const Divider(thickness: 2),
               // const _CurrentMangaChapterSetter(),
               // const Divider(thickness: 2),
               // const Divider(thickness: 2),
               _PopUpDialogOptions(
-                title: 'Save manga reader state to file',
+                title: 'Change current chapter index',
                 callback: () {
                   MangaReaderState.saveSettings();
                 },

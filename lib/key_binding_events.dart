@@ -21,13 +21,19 @@ void bindKeys(final window, final WidgetRef ref, ScrollController scrollControll
 
     // 'space' or 'down' pressed
     if ((keyData.logical == LogicalKeyboardKey.space.keyId || keyData.logical == LogicalKeyboardKey.arrowDown.keyId) && keyData.type == KeyEventType.down) {
-      printFromMangaReader([scrollController.position.pixels, '||', scrollController.position.maxScrollExtent]);
+      // printFromMangaReader([scrollController.position.pixels, '||', scrollController.position.maxScrollExtent]);
       if (scrollController.position.pixels == scrollController.position.maxScrollExtent) {
         if (noOfTimesSpaceClicked >= timesRequiredToClickSpaceBeforeOpenningNewManga.state) {
-          printFromMangaReader('Openning new manga...');
+          showSnackbar('Openning new manga...');
           noOfTimesSpaceClicked = 0;
-          MangaFileHandler.requestNextManga();
-          scrollController.jumpTo(0);
+          Future.delayed(
+              const Duration(seconds: 2),
+              () async => {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      MangaFileHandler.requestNextManga();
+                      scrollController.jumpTo(0);
+                    })
+                  });
         }
         noOfTimesSpaceClicked += 1;
         printFromMangaReader('Click ${timesRequiredToClickSpaceBeforeOpenningNewManga.state - noOfTimesSpaceClicked + 1} next manga...');

@@ -17,7 +17,7 @@ class Config {
     return _fullScreen;
   });
 
-  static int _timesRequiredToClickSpaceBeforeOpenningNewManga = 3;
+  static int _timesRequiredToClickSpaceBeforeOpenningNewManga = 5;
   static final timesRequiredToClickSpaceBeforeOpenningNewMangaProvider = StateProvider((ref) {
     return _timesRequiredToClickSpaceBeforeOpenningNewManga;
   });

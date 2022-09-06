@@ -8,7 +8,6 @@ class MangaFileHandler {
   static late WidgetRef ref;
   static String currentMangaChapterPath = '';
   static String currentMangaChapterDataPath = '';
-  static int currentReadingChapterIndex = 0;
 
   static bool checkIsCurrentMangaPathChapter(String path) {
     return path.contains(RegExp(r'[0-9]'));
@@ -24,14 +23,15 @@ class MangaFileHandler {
 
     imageList.sort((a, b) => lexSorter(a, b));
 
-    printFromMangaReader('MFH 0');
     currentMangaTitle.state = path.split('/').last.replaceAll('.cbz', '').replaceAll('.zip', '');
-    printFromMangaReader('MFH 1');
     mangaImagesList.state = imageList;
-    printFromMangaReader('MFH 2');
+
+    saveFiles();
   }
 
   static void setNewMangaChapter(String path) {
+    final currentMangaChapterIndex = ref.read(MangaReaderState.currentMangaChapterIndexProvider.state);
+    printFromMangaReader(currentMangaChapterIndex.state);
     // final chaptersPaths = ref.read(MangaReaderState.chaptersPathsProvider.state);
     // chaptersPaths.state = [];
     // Check if current manga chapter is Directory
@@ -48,12 +48,14 @@ class MangaFileHandler {
     }
     // Path not found
     else {
-      throw Exception('Path not found.');
+      showSnackbar('Path not found.');
     }
   }
 
   static void setNewMangaDirectory(String path) {
+    final currentMangaChapterIndex = ref.read(MangaReaderState.currentMangaChapterIndexProvider.state);
     final chaptersPaths = ref.read(MangaReaderState.chaptersPathsProvider.state);
+
     List<FileSystemEntity> directoryList = Directory(path).listSync();
     chaptersPaths.state = directoryList.map((item) => item.path).toList();
 
@@ -64,38 +66,42 @@ class MangaFileHandler {
     //   printFromMangaReader(element);
     // }
 
-    currentReadingChapterIndex = 0;
+    currentMangaChapterIndex.state = 0;
 
-    printFromMangaReader('chaptersPaths.length ------------------------ 0');
-    printFromMangaReader(chaptersPaths.state.length);
+    // printFromMangaReader('chaptersPaths.length ------------------------ 0');
+    // printFromMangaReader(chaptersPaths.state.length);
 
-    setNewMangaChapter(chaptersPaths.state[currentReadingChapterIndex]);
+    setNewMangaChapter(chaptersPaths.state[currentMangaChapterIndex.state]);
   }
 
   static void setMangaChapterIndex(int index) {
+    final currentMangaChapterIndex = ref.read(MangaReaderState.currentMangaChapterIndexProvider.state);
     final chaptersPaths = ref.read(MangaReaderState.chaptersPathsProvider.state);
+
     if (chaptersPaths.state.isNotEmpty && index < chaptersPaths.state.length) {
-      currentReadingChapterIndex = index;
-      setNewMangaChapter(chaptersPaths.state[currentReadingChapterIndex]);
+      currentMangaChapterIndex.state = index;
+      setNewMangaChapter(chaptersPaths.state[currentMangaChapterIndex.state]);
     } // Empty
     else {
       printFromMangaReader('chaptersPaths.length ------------------------');
-      printFromMangaReader(chaptersPaths.state.length);
+      // printFromMangaReader(chaptersPaths.state.length);
       // requestNextManga();
-      throw Exception('Invalid request!');
+      showSnackbar('Invalid request!');
     }
   }
 
   static void requestNextManga() {
+    final currentMangaChapterIndex = ref.read(MangaReaderState.currentMangaChapterIndexProvider.state);
     final chaptersPaths = ref.read(MangaReaderState.chaptersPathsProvider.state);
-    if (chaptersPaths.state.isNotEmpty && currentReadingChapterIndex < chaptersPaths.state.length) {
-      currentReadingChapterIndex += 1;
-      printFromMangaReader(chaptersPaths.state[currentReadingChapterIndex]);
-      printFromMangaReader(chaptersPaths.state);
-      setNewMangaChapter(chaptersPaths.state[currentReadingChapterIndex]);
+
+    if (chaptersPaths.state.isNotEmpty && currentMangaChapterIndex.state < chaptersPaths.state.length) {
+      currentMangaChapterIndex.state += 1;
+      // printFromMangaReader(chaptersPaths.state[currentReadingChapterIndex]);
+      // printFromMangaReader(chaptersPaths.state);
+      setNewMangaChapter(chaptersPaths.state[currentMangaChapterIndex.state]);
     } // Empty
     else {
-      throw Exception('No next chapter found!');
+      showSnackbar('No next chapter found!');
     }
   }
 }

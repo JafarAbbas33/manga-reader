@@ -2,25 +2,29 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:archive/archive_io.dart';
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
 import 'package:manga_reader/config.dart';
 import 'package:manga_reader/manga_reader_state.dart';
 
+late BuildContext context_in_utils_file;
+
 void printFromMangaReader(dynamic val) {
   // try {
+  String out = '';
   final re = RegExp(r'^#1[ \t]+.+:(?<line>[0-9]+):[0-9]+\)$', multiLine: true);
   final match = re.firstMatch(StackTrace.current.toString());
 
   if (val is List) {
-    String out = '---JDebug--- ${(match == null) ? -1 : int.parse(match.namedGroup('line')!)} ';
+    out = '---JDebug--- ${(match == null) ? -1 : int.parse(match.namedGroup('line')!)} ';
     for (dynamic element in val) {
       out += "$element ";
     }
-    debugPrint(out);
   } //
   else {
-    debugPrint("---JDebug--- ${(match == null) ? -1 : int.parse(match.namedGroup('line')!)} $val");
+    out = "---JDebug--- ${(match == null) ? -1 : int.parse(match.namedGroup('line')!)} $val";
   } //
+  debugPrint(out);
   // } catch (e) {
   // return;
   // }
@@ -116,10 +120,25 @@ int lexSorter(String a, String b) {
 
 // =============================================================================================================================
 
-void showSnackbar(context, String text) {
-  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-    content: Text(text),
-  ));
+void showSnackbar(String text) {
+  // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+  //   content: Text(text),
+  // ));
+
+  var snackBar = SnackBar(
+    elevation: 0,
+    behavior: SnackBarBehavior.floating,
+    backgroundColor: Colors.transparent,
+    content: AwesomeSnackbarContent(
+      title: 'Notification!',
+      message: text,
+      contentType: ContentType.help,
+    ),
+  );
+
+  // WidgetsBinding.instance.addPostFrameCallback((_) {
+  ScaffoldMessenger.of(context_in_utils_file).showSnackBar(snackBar);
+  // });
 }
 
 // =============================================================================================================================
