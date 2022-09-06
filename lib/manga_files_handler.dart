@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:manga_reader/manga_reader_state.dart';
-import 'package:manga_reader/providers.dart';
 import 'package:manga_reader/utils.dart';
 
 class MangaFileHandler {
@@ -17,7 +16,8 @@ class MangaFileHandler {
   }
 
   static void _retrieveMangaImagesPathsAndUpdateUI(String path) {
-    final mangaImagesDirectory = ref.read(mangaImagesListProvider.state);
+    final mangaImagesList = ref.read(MangaReaderState.mangaImagesListProvider.state);
+    final currentMangaTitle = ref.read(MangaReaderState.currentMangaTitleProvider.state);
 
     List<FileSystemEntity> directoryList = Directory(path).listSync();
 
@@ -32,10 +32,12 @@ class MangaFileHandler {
     // printFromMangaReader(imageList);
 
     imageList.sort((a, b) => lexSorter(a, b));
-    MangaReaderState.mangaImagesList = imageList;
-    MangaReaderState.currentMangaTitle = path.split('/').last.replaceAll('.cbz', '').replaceAll('.zip', '');
 
-    mangaImagesDirectory.state = imageList;
+    printFromMangaReader('MFH 0');
+    currentMangaTitle.state = path.split('/').last.replaceAll('.cbz', '').replaceAll('.zip', '');
+    printFromMangaReader('MFH 1');
+    mangaImagesList.state = imageList;
+    printFromMangaReader('MFH 2');
   }
 
   static void setNewMangaChapter(String path) {
@@ -86,8 +88,17 @@ class MangaFileHandler {
     // printFromMangaReader('=' * 150);
   }
 
+  static void setMangaChapterIndex(int index) {
+    if (chaptersPaths.isNotEmpty && index < chaptersPaths.length - 1) {
+      currentReadingChapterIndex = index;
+      setNewMangaChapter(chaptersPaths[currentReadingChapterIndex]);
+    } // Empty
+    else {
+      throw Exception('Invalid request!');
+    }
+  }
+
   static void requestNextManga() {
-    // total 3 ci 2 2
     if (chaptersPaths.isNotEmpty && currentReadingChapterIndex < chaptersPaths.length - 1) {
       currentReadingChapterIndex += 1;
       setNewMangaChapter(chaptersPaths[currentReadingChapterIndex]);

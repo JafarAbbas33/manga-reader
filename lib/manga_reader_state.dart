@@ -1,27 +1,22 @@
+// ignore_for_file: prefer_final_fields
+
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:manga_reader/utils.dart';
 
 class MangaReaderState {
   MangaReaderState._();
 
-  static double maxScrollPosition = 0;
-  static double _currentScrollPosition = 0;
+  static late WidgetRef ref;
 
-  static set currentScrollPosition(double position) {
-    if (maxScrollPosition < position) {
-      maxScrollPosition = position;
-    }
+  static const String _currentMangaTitle = 'Manga Reader';
+  static final currentMangaTitleProvider = StateProvider((ref) {
+    return _currentMangaTitle;
+  });
 
-    _currentScrollPosition = position;
-  }
-
-  static double get currentScrollPosition {
-    return _currentScrollPosition;
-  }
-
-  static double fewSecondsBeforeScrollPosition = 0;
-
-  static String currentMangaTitle = 'Manga Reader';
-  static List<String> mangaImagesList = [];
+  static final List<String> _mangaImagesList = [];
+  static final mangaImagesListProvider = StateProvider((ref) {
+    return _mangaImagesList;
+  });
 
 // =============================================================================================================================
 
@@ -29,22 +24,17 @@ class MangaReaderState {
     printFromMangaReader(jsonData);
     printFromMangaReader(jsonData.runtimeType);
 
-    maxScrollPosition = jsonData['maxScrollPosition'];
-    _currentScrollPosition = jsonData['_currentScrollPosition'];
-    maxScrollPosition = jsonData['maxScrollPosition'];
-    _currentScrollPosition = jsonData['_currentScrollPosition'];
-    fewSecondsBeforeScrollPosition = jsonData['fewSecondsBeforeScrollPosition'];
-    currentMangaTitle = jsonData['currentMangaTitle'];
-    mangaImagesList = jsonData['mangaImagesList'];
+    printFromMangaReader('Updating states state 0');
+    ref.read(currentMangaTitleProvider.state).state = jsonData['currentMangaTitle'];
+    printFromMangaReader('Updating states state 1');
+    ref.read(mangaImagesListProvider.state).state = jsonData['mangaImagesList'];
+    printFromMangaReader('Updating states state 2');
   }
 
   static Map<String, dynamic> toJson() {
     return {
-      'maxScrollPosition': maxScrollPosition,
-      '_currentScrollPosition': _currentScrollPosition,
-      'fewSecondsBeforeScrollPosition': fewSecondsBeforeScrollPosition,
-      'currentMangaTitle': currentMangaTitle,
-      'mangaImagesDirectory': mangaImagesList,
+      'currentMangaTitle': ref.read(currentMangaTitleProvider.state).state,
+      'mangaImagesDirectory': ref.read(mangaImagesListProvider.state).state,
     };
   }
 
@@ -52,8 +42,8 @@ class MangaReaderState {
     try {
       printFromMangaReader('Writing state file...');
       return saveJsonFile('state.json', MangaReaderState.toJson());
-    } catch (_, e) {
-      printFromMangaReader('Error while saving state file: $e');
+    } catch (_) {
+      printFromMangaReader('Error while saving state file!'); //: $e');
 
       return false;
     }
@@ -67,7 +57,7 @@ class MangaReaderState {
       (data.entries.isEmpty) ? printFromMangaReader('No state file found.') : MangaReaderState.fromJson(data);
       // printFromMangaReader(MangaReaderState.toJson());
     } catch (_) {
-      printFromMangaReader('Error while loading state file'); //: $e');
+      printFromMangaReader('Error while loading state file!'); //: $e');
       // rethrow;
     }
   }

@@ -10,7 +10,6 @@ import 'package:manga_reader/key_binding_events.dart';
 import 'package:manga_reader/manga_files_handler.dart';
 import 'package:manga_reader/manga_reader_app_bar.dart';
 import 'package:manga_reader/manga_reader_state.dart';
-import 'package:manga_reader/providers.dart';
 import 'package:manga_reader/manga_image.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:manga_reader/utils.dart';
@@ -44,12 +43,13 @@ class MyHomePage extends HookConsumerWidget {
     debugPrint('Building home page...');
 
     MangaFileHandler.ref = ref;
+    MangaReaderState.ref = ref;
     Config.ref = ref;
 
     ScrollController scrollController = useScrollController();
-    final fullScreen = ref.watch(fullScreenProvider.state);
+    final fullScreen = ref.watch(Config.fullScreenProvider.state);
     final mangaImageSize = ref.watch(Config.mangaImageSizeProvider.state);
-    final imageList = ref.watch(mangaImagesListProvider.state);
+    final imageList = ref.watch(MangaReaderState.mangaImagesListProvider.state);
 
     bool dragAndDropDialogOpen = false;
 
@@ -75,7 +75,7 @@ class MyHomePage extends HookConsumerWidget {
                 showDialog(
                     context: context,
                     builder: (_) {
-                      return const PopUpDialog();
+                      return const _PopUpDialog();
                     });
               },
               child: const Icon(Icons.settings),
@@ -92,7 +92,7 @@ class MyHomePage extends HookConsumerWidget {
                 context: context,
                 builder: (_) {
                   dragAndDropDialogOpen = true;
-                  return const DragAndDropDialog();
+                  return const _DragAndDropDialog();
                 });
           }
         },
@@ -141,8 +141,8 @@ class MyHomePage extends HookConsumerWidget {
   }
 }
 
-class DragAndDropDialog extends StatelessWidget {
-  const DragAndDropDialog({Key? key}) : super(key: key);
+class _DragAndDropDialog extends StatelessWidget {
+  const _DragAndDropDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -159,33 +159,47 @@ class DragAndDropDialog extends StatelessWidget {
   }
 }
 
-class PopUpDialog extends StatelessWidget {
-  const PopUpDialog({Key? key}) : super(key: key);
+class _PopUpDialog extends StatelessWidget {
+  const _PopUpDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Dialog(
       child: SizedBox(
-        width: 380,
+        width: 700,
         height: 380,
         child: Column(
           children: [
+            const SizedBox(height: 10),
             _PopUpDialogOptions(
-                title: 'Load config from file',
-                callback: () {
-                  Config.loadSettings();
-                }),
-            _PopUpDialogOptions(
-                title: 'Load manga reader state from file',
-                callback: () {
-                  MangaReaderState.loadSettings();
-                }),
-            const SizedBox(height: 40),
-            const CircularProgressIndicator(),
-            const Padding(
-              padding: EdgeInsets.only(left: 10.0),
-              child: Text("Loading..."),
+              title: 'Load config from file',
+              callback: () {
+                Config.loadSettings();
+              },
             ),
+            const Divider(thickness: 2),
+            _PopUpDialogOptions(
+              title: 'Load manga reader state from file',
+              callback: () {
+                MangaReaderState.loadSettings();
+              },
+            ),
+            const Divider(thickness: 2),
+            _PopUpDialogOptions(
+              title: 'Save config to file',
+              callback: () {
+                Config.saveSettings();
+              },
+            ),
+            const Divider(thickness: 2),
+            _PopUpDialogOptions(
+              title: 'Save manga reader state to file',
+              callback: () {
+                MangaReaderState.saveSettings();
+              },
+            ),
+            const Divider(thickness: 2),
+            const SizedBox(height: 40),
           ],
         ),
       ),
@@ -202,17 +216,17 @@ class _PopUpDialogOptions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(20),
-      child: DecoratedBox(
-        decoration: BoxDecoration(border: Border.all(width: 2, color: Colors.blueAccent), borderRadius: BorderRadius.circular(20)),
+      padding: const EdgeInsets.all(10),
+      child: Align(
+        alignment: Alignment.centerLeft,
         child: TextButton(
-          onPressed: callback(),
+          onPressed: () => callback(),
           child: Text(
             title,
             style: TextStyle(
               color: Colors.grey.shade600,
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
+              // fontWeight: FontWeight.bold,
+              fontSize: 16,
             ),
           ),
         ),
@@ -229,9 +243,9 @@ class _DragAndDropDialogOptions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(10),
       child: DecoratedBox(
-        decoration: BoxDecoration(border: Border.all(width: 2, color: Colors.blueAccent), borderRadius: BorderRadius.circular(20)),
+        decoration: BoxDecoration(border: Border.all(width: 3, color: Colors.blueAccent), borderRadius: BorderRadius.circular(20)),
         child: Align(
           alignment: Alignment.center,
           child: Text(
