@@ -7,7 +7,7 @@ class Config {
   Config._();
   static late WidgetRef ref;
 
-  static const double _mangaImageSize = 1.5; // 1.5 Default
+  static double _mangaImageSize = 1.5; // 1.5 Default
   static final mangaImageSizeProvider = StateProvider((ref) {
     return _mangaImageSize;
   });
@@ -15,6 +15,11 @@ class Config {
   static bool _fullScreen = false;
   static final fullScreenProvider = StateProvider((ref) {
     return _fullScreen;
+  });
+
+  static int _timesRequiredToClickSpaceBeforeOpenningNewManga = 3;
+  static final timesRequiredToClickSpaceBeforeOpenningNewMangaProvider = StateProvider((ref) {
+    return _timesRequiredToClickSpaceBeforeOpenningNewManga;
   });
 
   static double _fasterScrollSpeed = 2000.0;
@@ -29,14 +34,26 @@ class Config {
 
 // =============================================================================================================================
 
-  static void fromJson(Map<String, dynamic> jsonData) {
-    ref.read(mangaImageSizeProvider.state).state = jsonData['mangaImageSize'];
-  }
+// --------------------TO JSON--------------------
 
   static Map<String, dynamic> toJson() {
     return {
-      'mangaImageSize': ref.read(mangaImageSizeProvider.state).state,
+      '_mangaImageSize': ref.read(mangaImageSizeProvider.state).state,
+      '_fullScreen': ref.read(fullScreenProvider.state).state,
+      '_fasterScrollSpeed': ref.read(fasterScrollSpeedProvider.state).state,
+      '_scrollSpeed': ref.read(scrollSpeedProvider.state).state,
+      '_timesRequiredToClickSpaceBeforeOpenningNewManga': ref.read(timesRequiredToClickSpaceBeforeOpenningNewMangaProvider.state).state,
     };
+  }
+
+// --------------------FROM JSON--------------------
+
+  static void fromJson(Map<String, dynamic> jsonData) {
+    ref.read(mangaImageSizeProvider.state).state = jsonData['_mangaImageSize'];
+    ref.read(fullScreenProvider.state).state = jsonData['_fullScreen'];
+    ref.read(fasterScrollSpeedProvider.state).state = jsonData['_fasterScrollSpeed'];
+    ref.read(scrollSpeedProvider.state).state = jsonData['_scrollSpeed'];
+    ref.read(timesRequiredToClickSpaceBeforeOpenningNewMangaProvider.state).state = jsonData['_timesRequiredToClickSpaceBeforeOpenningNewManga'];
   }
 
   static bool saveSettings() {

@@ -3,15 +3,27 @@ import 'dart:io';
 
 import 'package:archive/archive_io.dart';
 import 'package:flutter/material.dart';
+import 'package:manga_reader/config.dart';
+import 'package:manga_reader/manga_reader_state.dart';
 
-void printFromMangaReader(dynamic str) {
-  try {
-    final re = RegExp(r'^#1[ \t]+.+:(?<line>[0-9]+):[0-9]+\)$', multiLine: true);
-    final match = re.firstMatch(StackTrace.current.toString());
-    debugPrint("---JDebug--- ${(match == null) ? -1 : int.parse(match.namedGroup('line')!)} $str");
-  } catch (e) {
-    return;
-  }
+void printFromMangaReader(dynamic val) {
+  // try {
+  final re = RegExp(r'^#1[ \t]+.+:(?<line>[0-9]+):[0-9]+\)$', multiLine: true);
+  final match = re.firstMatch(StackTrace.current.toString());
+
+  if (val is List) {
+    String out = '---JDebug--- ${(match == null) ? -1 : int.parse(match.namedGroup('line')!)} ';
+    for (dynamic element in val) {
+      out += "$element ";
+    }
+    debugPrint(out);
+  } //
+  else {
+    debugPrint("---JDebug--- ${(match == null) ? -1 : int.parse(match.namedGroup('line')!)} $val");
+  } //
+  // } catch (e) {
+  // return;
+  // }
 
   // debugPrint('---JDebug--- ${CustomTrace(StackTrace.current).lineNumber} --- ' + str);
 }
@@ -89,6 +101,7 @@ String extractMangaChapter(String path) {
     }
     return targetDir;
   } else {
+    printFromMangaReader(path);
     throw Exception('File type not supported!');
   }
 }
@@ -109,5 +122,22 @@ void showSnackbar(context, String text) {
   ));
 }
 
+// =============================================================================================================================
+
+void loadFiles() {
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    MangaReaderState.loadSettings();
+    Config.loadSettings();
+  });
+}
+
+// =============================================================================================================================
+
+void saveFiles() {
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    MangaReaderState.saveSettings();
+    Config.saveSettings();
+  });
+}
 
 // =============================================================================================================================

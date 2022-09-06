@@ -4,19 +4,34 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:manga_reader/config.dart';
+import 'package:manga_reader/manga_files_handler.dart';
+import 'package:manga_reader/utils.dart';
 import 'package:window_manager/window_manager.dart';
 
 void bindKeys(final window, final WidgetRef ref, ScrollController scrollController) {
+  int noOfTimesSpaceClicked = 0;
   final fullScreen = ref.watch(Config.fullScreenProvider.state);
   final scrollSpeed = ref.read(Config.scrollSpeedProvider.state);
   final fasterScrollSpeed = ref.read(Config.fasterScrollSpeedProvider.state);
   final mangaImageSize = ref.watch(Config.mangaImageSizeProvider.state);
+  final timesRequiredToClickSpaceBeforeOpenningNewManga = ref.read(Config.timesRequiredToClickSpaceBeforeOpenningNewMangaProvider.state);
 
   window.onKeyData = (final keyData) {
-    debugPrint('${keyData.logical} ******************************************');
+    // debugPrint('${keyData.logical} ******************************************');
 
     // 'space' or 'down' pressed
     if ((keyData.logical == LogicalKeyboardKey.space.keyId || keyData.logical == LogicalKeyboardKey.arrowDown.keyId) && keyData.type == KeyEventType.down) {
+      printFromMangaReader([scrollController.position.pixels, '||', scrollController.position.maxScrollExtent]);
+      if (scrollController.position.pixels == scrollController.position.maxScrollExtent) {
+        if (noOfTimesSpaceClicked >= timesRequiredToClickSpaceBeforeOpenningNewManga.state) {
+          printFromMangaReader('Openning new manga...');
+          noOfTimesSpaceClicked = 0;
+          MangaFileHandler.requestNextManga();
+          scrollController.jumpTo(0);
+        }
+        noOfTimesSpaceClicked += 1;
+        printFromMangaReader('Click ${timesRequiredToClickSpaceBeforeOpenningNewManga.state - noOfTimesSpaceClicked + 1} next manga...');
+      }
       scrollController.animateTo(scrollController.position.pixels + scrollSpeed.state, duration: const Duration(milliseconds: 500), curve: Curves.fastOutSlowIn);
       return true;
     }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:manga_reader/home_page.dart';
+import 'package:manga_reader/utils.dart';
 
 void main() {
   final container = ProviderContainer();
@@ -15,6 +16,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    loadFiles();
+
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(

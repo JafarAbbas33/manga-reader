@@ -8,7 +8,6 @@ class MangaFileHandler {
   static late WidgetRef ref;
   static String currentMangaChapterPath = '';
   static String currentMangaChapterDataPath = '';
-  static List<String> chaptersPaths = [];
   static int currentReadingChapterIndex = 0;
 
   static bool checkIsCurrentMangaPathChapter(String path) {
@@ -21,15 +20,7 @@ class MangaFileHandler {
 
     List<FileSystemEntity> directoryList = Directory(path).listSync();
 
-    // for (FileSystemEntity element in directoryList) {
-    //   printFromMangaReader(element);
-    // }
-
     List<String> imageList = directoryList.map((item) => item.path).where((item) => item.endsWith(".jpg") || item.endsWith(".png")).toList(growable: false);
-
-    // printFromMangaReader('0' * 80);
-    // printFromMangaReader(path);
-    // printFromMangaReader(imageList);
 
     imageList.sort((a, b) => lexSorter(a, b));
 
@@ -41,7 +32,8 @@ class MangaFileHandler {
   }
 
   static void setNewMangaChapter(String path) {
-    chaptersPaths = [];
+    // final chaptersPaths = ref.read(MangaReaderState.chaptersPathsProvider.state);
+    // chaptersPaths.state = [];
     // Check if current manga chapter is Directory
     if (Directory(path).existsSync()) {
       currentMangaChapterPath = path;
@@ -50,7 +42,6 @@ class MangaFileHandler {
     }
     // Check if current manga chapter is file
     else if (File(path).existsSync()) {
-      printFromMangaReader('2' * 80);
       currentMangaChapterPath = path;
       currentMangaChapterDataPath = extractMangaChapter(path);
       _retrieveMangaImagesPathsAndUpdateUI(currentMangaChapterDataPath);
@@ -62,46 +53,46 @@ class MangaFileHandler {
   }
 
   static void setNewMangaDirectory(String path) {
+    final chaptersPaths = ref.read(MangaReaderState.chaptersPathsProvider.state);
     List<FileSystemEntity> directoryList = Directory(path).listSync();
-    chaptersPaths = directoryList.map((item) => item.path).toList();
+    chaptersPaths.state = directoryList.map((item) => item.path).toList();
 
-    chaptersPaths.sort((a, b) => lexSorter(a, b));
+    chaptersPaths.state.sort((a, b) => lexSorter(a, b));
 
-    // for (String element in chaptersPaths) {
+    // printFromMangaReader('0' * 80);
+    // for (String element in chaptersPaths.state) {
     //   printFromMangaReader(element);
     // }
 
-    // printFromMangaReader('=' * 150);
-    // for (FileSystemEntity element in directoryList) {
-    //   chaptersPaths.add(element.path);
-    // }
-
-    printFromMangaReader('0' * 80);
-    for (String element in chaptersPaths) {
-      printFromMangaReader(element);
-      // printFromMangaReader('0' * 8);
-    }
-
     currentReadingChapterIndex = 0;
-    setNewMangaChapter(chaptersPaths[currentReadingChapterIndex]);
 
-    // printFromMangaReader('=' * 150);
+    printFromMangaReader('chaptersPaths.length ------------------------ 0');
+    printFromMangaReader(chaptersPaths.state.length);
+
+    setNewMangaChapter(chaptersPaths.state[currentReadingChapterIndex]);
   }
 
   static void setMangaChapterIndex(int index) {
-    if (chaptersPaths.isNotEmpty && index < chaptersPaths.length - 1) {
+    final chaptersPaths = ref.read(MangaReaderState.chaptersPathsProvider.state);
+    if (chaptersPaths.state.isNotEmpty && index < chaptersPaths.state.length) {
       currentReadingChapterIndex = index;
-      setNewMangaChapter(chaptersPaths[currentReadingChapterIndex]);
+      setNewMangaChapter(chaptersPaths.state[currentReadingChapterIndex]);
     } // Empty
     else {
+      printFromMangaReader('chaptersPaths.length ------------------------');
+      printFromMangaReader(chaptersPaths.state.length);
+      // requestNextManga();
       throw Exception('Invalid request!');
     }
   }
 
   static void requestNextManga() {
-    if (chaptersPaths.isNotEmpty && currentReadingChapterIndex < chaptersPaths.length - 1) {
+    final chaptersPaths = ref.read(MangaReaderState.chaptersPathsProvider.state);
+    if (chaptersPaths.state.isNotEmpty && currentReadingChapterIndex < chaptersPaths.state.length) {
       currentReadingChapterIndex += 1;
-      setNewMangaChapter(chaptersPaths[currentReadingChapterIndex]);
+      printFromMangaReader(chaptersPaths.state[currentReadingChapterIndex]);
+      printFromMangaReader(chaptersPaths.state);
+      setNewMangaChapter(chaptersPaths.state[currentReadingChapterIndex]);
     } // Empty
     else {
       throw Exception('No next chapter found!');
