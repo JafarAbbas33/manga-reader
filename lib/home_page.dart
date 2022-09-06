@@ -44,11 +44,14 @@ class MyHomePage extends HookConsumerWidget {
     debugPrint('Building home page...');
 
     MangaFileHandler.ref = ref;
+    Config.ref = ref;
 
     ScrollController scrollController = useScrollController();
     final fullScreen = ref.watch(fullScreenProvider.state);
-    final mangaImageSize = ref.watch(mangaImageSizeProvider.state);
+    final mangaImageSize = ref.watch(Config.mangaImageSizeProvider.state);
     final imageList = ref.watch(mangaImagesListProvider.state);
+
+    bool dragAndDropDialogOpen = false;
 
     // printFromMangaReader(imageList.state);
 
@@ -69,13 +72,11 @@ class MyHomePage extends HookConsumerWidget {
       floatingActionButton: (!fullScreen.state)
           ? FloatingActionButton(
               onPressed: () {
-                printFromMangaReader('Called');
-
-                Config.saveSettings();
-                MangaReaderState.saveSettings();
-
-                // ref.refresh(mangaImageSizeProvider);
-                // MangaReaderState.saveState();
+                showDialog(
+                    context: context,
+                    builder: (_) {
+                      return const PopUpDialog();
+                    });
               },
               child: const Icon(Icons.settings),
             )
@@ -83,11 +84,38 @@ class MyHomePage extends HookConsumerWidget {
       backgroundColor: Colors.black,
       appBar: (!fullScreen.state) ? const MangaReaderAppBar().build(context, ref) : null,
       body: DropTarget(
+        onDragEntered: (details) {
+          // printFromMangaReader('Opening drag & Drop...');
+
+          if (!dragAndDropDialogOpen) {
+            showDialog(
+                context: context,
+                builder: (_) {
+                  dragAndDropDialogOpen = true;
+                  return const DragAndDropDialog();
+                });
+          }
+        },
+        onDragExited: (details) {
+          if (dragAndDropDialogOpen) {
+            // printFromMangaReader('Closing drag & Drop...');
+            Navigator.of(context).pop();
+            dragAndDropDialogOpen = false;
+          }
+        },
         onDragDone: (detail) {
-          printFromMangaReader('path');
           String path = detail.files[0].path;
-          printFromMangaReader(path);
-          MangaFileHandler.setNewMangaChapter(path);
+          if (detail.localPosition.dx < MediaQuery.of(context).size.width / 2) {
+            printFromMangaReader('Dropped on left side! Setting new manga chapter...');
+            MangaFileHandler.setNewMangaChapter(path);
+          } //
+          else {
+            printFromMangaReader('Dropped on right side! Setting new manga directory...');
+            MangaFileHandler.setNewMangaDirectory(path);
+          }
+          // printFromMangaReader('${MediaQuery.of(context).size.width}||${detail.localPosition.dx}');
+
+          printFromMangaReader('Drag done. Closing drag & Drop...');
         },
         child: (imageList.state.isEmpty)
             ? const Align(
@@ -99,6 +127,7 @@ class MyHomePage extends HookConsumerWidget {
                 ),
               )
             : ListView.builder(
+                cacheExtent: 4000,
                 shrinkWrap: true,
                 controller: scrollController,
                 itemCount: imageList.state.length,
@@ -107,6 +136,113 @@ class MyHomePage extends HookConsumerWidget {
 
                   return MangaImage(file: file, maxWidth: maxWidth);
                 }),
+      ),
+    );
+  }
+}
+
+class DragAndDropDialog extends StatelessWidget {
+  const DragAndDropDialog({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      child: GridView.count(
+        // childAspectRatio: 1,
+        crossAxisCount: 2,
+        children: const [
+          _DragAndDropDialogOptions(title: 'Drop Manga chapter here'),
+          _DragAndDropDialogOptions(title: 'Drop full manga folder here'),
+        ],
+      ),
+    );
+  }
+}
+
+class PopUpDialog extends StatelessWidget {
+  const PopUpDialog({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      child: SizedBox(
+        width: 380,
+        height: 380,
+        child: Column(
+          children: [
+            _PopUpDialogOptions(
+                title: 'Load config from file',
+                callback: () {
+                  Config.loadSettings();
+                }),
+            _PopUpDialogOptions(
+                title: 'Load manga reader state from file',
+                callback: () {
+                  MangaReaderState.loadSettings();
+                }),
+            const SizedBox(height: 40),
+            const CircularProgressIndicator(),
+            const Padding(
+              padding: EdgeInsets.only(left: 10.0),
+              child: Text("Loading..."),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _PopUpDialogOptions extends StatelessWidget {
+  const _PopUpDialogOptions({Key? key, required this.title, required this.callback}) : super(key: key);
+
+  final String title;
+  final Function callback;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(20),
+      child: DecoratedBox(
+        decoration: BoxDecoration(border: Border.all(width: 2, color: Colors.blueAccent), borderRadius: BorderRadius.circular(20)),
+        child: TextButton(
+          onPressed: callback(),
+          child: Text(
+            title,
+            style: TextStyle(
+              color: Colors.grey.shade600,
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _DragAndDropDialogOptions extends StatelessWidget {
+  const _DragAndDropDialogOptions({Key? key, required this.title}) : super(key: key);
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(20),
+      child: DecoratedBox(
+        decoration: BoxDecoration(border: Border.all(width: 2, color: Colors.blueAccent), borderRadius: BorderRadius.circular(20)),
+        child: Align(
+          alignment: Alignment.center,
+          child: Text(
+            title,
+            style: TextStyle(
+              color: Colors.grey.shade600,
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
+          ),
+        ),
       ),
     );
   }

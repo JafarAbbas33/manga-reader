@@ -1,10 +1,5 @@
-import 'package:manga_reader/config.dart';
 import 'package:manga_reader/manga_reader_state.dart';
 import 'package:riverpod/riverpod.dart';
-
-final mangaImageSizeProvider = StateProvider((ref) {
-  return Config.mangaImageSize;
-});
 
 bool _fullScreen = false;
 final fullScreenProvider = StateProvider((ref) {

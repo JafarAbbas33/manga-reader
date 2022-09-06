@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_size_getter/image_size_getter.dart';
-import 'package:manga_reader/providers.dart';
+import 'package:manga_reader/config.dart';
 
 class MangaImage extends HookConsumerWidget {
   const MangaImage({Key? key, required this.file, required this.maxWidth}) : super(key: key);
@@ -21,7 +21,7 @@ class MangaImage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final mangaImageSize = ref.watch(mangaImageSizeProvider.state);
+    final mangaImageSize = ref.watch(Config.mangaImageSizeProvider.state);
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 200 * mangaImageSize.state),

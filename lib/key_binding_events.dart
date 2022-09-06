@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:manga_reader/config.dart';
 import 'package:manga_reader/utils.dart';
 import 'package:manga_reader/manga_reader_state.dart';
 import 'package:manga_reader/providers.dart';
@@ -12,7 +13,7 @@ void bindKeys(final window, final WidgetRef ref, ScrollController scrollControll
   final fullScreen = ref.watch(fullScreenProvider.state);
   final scrollSpeed = ref.read(scrollSpeedProvider.state);
   final fasterScrollSpeed = ref.read(fasterScrollSpeedProvider.state);
-  final mangaImageSize = ref.watch(mangaImageSizeProvider.state);
+  final mangaImageSize = ref.watch(Config.mangaImageSizeProvider.state);
 
   window.onKeyData = (final keyData) {
     debugPrint('${keyData.logical} ******************************************');
