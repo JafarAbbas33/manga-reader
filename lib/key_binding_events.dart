@@ -21,7 +21,7 @@ void bindKeys(final window, final WidgetRef ref, ScrollController scrollControll
 
     // 'space' or 'down' pressed
     if ((keyData.logical == LogicalKeyboardKey.space.keyId || keyData.logical == LogicalKeyboardKey.arrowDown.keyId) && keyData.type == KeyEventType.down) {
-      // printFromMangaReader([scrollController.position.pixels, '||', scrollController.position.maxScrollExtent]);
+      printFromMangaReader([scrollController.position.pixels, '||', scrollController.position.maxScrollExtent]);
       if (scrollController.position.pixels == scrollController.position.maxScrollExtent) {
         if (noOfTimesSpaceClicked >= timesRequiredToClickSpaceBeforeOpenningNewManga.state) {
           showSnackbar('Openning new manga...');

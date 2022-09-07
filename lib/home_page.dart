@@ -29,6 +29,7 @@ class MyHomePage extends HookConsumerWidget {
     int max = 999990;
 
     for (int i = 0; i < imageList.length; ++i) {
+      // printFromMangaReader(File(imageList[i]));
       Size size = ImageSizeGetter.getSize(FileInput(File(imageList[i])));
       Size newSize = getNewSize(size, mangaImageSize);
 
@@ -40,13 +41,13 @@ class MyHomePage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    context_in_utils_file = context;
-
-    debugPrint('Building home page...');
-
+    contextInUtilsFile = context;
+    refInUtilsFile = ref;
     MangaFileHandler.ref = ref;
     MangaReaderState.ref = ref;
     Config.ref = ref;
+
+    debugPrint('Building home page...');
 
     ScrollController scrollController = useScrollController();
 
@@ -61,7 +62,6 @@ class MyHomePage extends HookConsumerWidget {
 
     useEffect(
       () {
-        printFromMangaReader('Loading files...');
         bindKeys(window, ref, scrollController);
 
         return null;
@@ -87,59 +87,72 @@ class MyHomePage extends HookConsumerWidget {
       backgroundColor: Colors.black,
       appBar: (!fullScreen.state) ? const MangaReaderAppBar().build(context, ref) : null,
       body: DropTarget(
-        onDragEntered: (details) {
-          // printFromMangaReader('Opening drag & Drop...');
+          onDragEntered: (details) {
+            // printFromMangaReader('Opening drag & Drop...');
 
-          if (!dragAndDropDialogOpen) {
-            showDialog(
-                context: context,
-                builder: (_) {
-                  dragAndDropDialogOpen = true;
-                  return const _DragAndDropDialog();
-                });
-          }
-        },
-        onDragExited: (details) {
-          if (dragAndDropDialogOpen) {
-            // printFromMangaReader('Closing drag & Drop...');
-            Navigator.of(context).pop();
-            dragAndDropDialogOpen = false;
-          }
-        },
-        onDragDone: (detail) {
-          String path = detail.files[0].path;
-          if (detail.localPosition.dx < MediaQuery.of(context).size.width / 2) {
-            printFromMangaReader('Dropped on left side! Setting new manga chapter...');
-            MangaFileHandler.setNewMangaChapter(path);
-          } //
-          else {
-            printFromMangaReader('Dropped on right side! Setting new manga directory...');
-            MangaFileHandler.setNewMangaDirectory(path);
-          }
-          // printFromMangaReader('${MediaQuery.of(context).size.width}||${detail.localPosition.dx}');
+            if (!dragAndDropDialogOpen) {
+              showDialog(
+                  context: context,
+                  builder: (_) {
+                    dragAndDropDialogOpen = true;
+                    return const _DragAndDropDialog();
+                  });
+            }
+          },
+          onDragExited: (details) {
+            if (dragAndDropDialogOpen) {
+              // printFromMangaReader('Closing drag & Drop...');
+              Navigator.of(context).pop();
+              dragAndDropDialogOpen = false;
+            }
+          },
+          onDragDone: (detail) {
+            String path = detail.files[0].path;
+            if (detail.localPosition.dx < MediaQuery.of(context).size.width / 2) {
+              printFromMangaReader('Dropped on left side! Setting new manga chapter...');
+              MangaFileHandler.setNewMangaChapter(path);
+            } //
+            else {
+              printFromMangaReader('Dropped on right side! Setting new manga directory...');
+              MangaFileHandler.setNewMangaDirectory(path);
+            }
+            // printFromMangaReader('${MediaQuery.of(context).size.width}||${detail.localPosition.dx}');
 
-          printFromMangaReader('Drag done. Closing drag & Drop...');
-        },
-        child: (imageList.state.isEmpty)
-            ? const Align(
-                alignment: Alignment.center,
-                child: Text(
-                  'You can add mangas by dragging and dropping a manga chapter (NOT THE FULL MANGA!)',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.white, fontSize: 20),
-                ),
-              )
-            : ListView.builder(
-                cacheExtent: 4000,
-                shrinkWrap: true,
-                controller: scrollController,
-                itemCount: imageList.state.length,
-                itemBuilder: (context, i) {
-                  File file = File(imageList.state[i]);
+            printFromMangaReader('Drag done. Closing drag & Drop...');
+          },
+          child: (imageList.state.isEmpty)
+              ? const Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    'You can add mangas by dragging and dropping!',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.white, fontSize: 20),
+                  ),
+                )
+              : ListView(
+                  shrinkWrap: true,
+                  controller: scrollController,
+                  children: [
+                    ...imageList.state.map((e) {
+                      // printFromMangaReader('Loading: $e');
+                      return MangaImage(file: File(e), maxWidth: maxWidth);
+                    }).toList(),
+                  ],
+                  // File file = File(imageList.state[i]);
 
-                  return MangaImage(file: file, maxWidth: maxWidth);
-                }),
-      ),
+                  // return ;
+                )
+          // ListView.builder(
+          //     cacheExtent: 4000,
+          //     shrinkWrap: true,
+          //     controller: scrollController,
+          //     itemCount: imageList.state.length,
+          //     itemBuilder: (context, i) {
+          //       File file = File(imageList.state[i]);
+
+          //       return MangaImage(file: file, maxWidth: maxWidth);
+          //     }),
+          ),
     );
   }
 }

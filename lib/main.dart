@@ -16,6 +16,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    printFromMangaReader('Loading files...');
     loadFiles();
 
     return MaterialApp(

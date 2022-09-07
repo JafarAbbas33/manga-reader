@@ -4,10 +4,13 @@ import 'dart:io';
 import 'package:archive/archive_io.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:manga_reader/config.dart';
+import 'package:manga_reader/manga_files_handler.dart';
 import 'package:manga_reader/manga_reader_state.dart';
 
-late BuildContext context_in_utils_file;
+late BuildContext contextInUtilsFile;
+late WidgetRef refInUtilsFile;
 
 void printFromMangaReader(dynamic val) {
   // try {
@@ -137,7 +140,7 @@ void showSnackbar(String text) {
   );
 
   // WidgetsBinding.instance.addPostFrameCallback((_) {
-  ScaffoldMessenger.of(context_in_utils_file).showSnackBar(snackBar);
+  ScaffoldMessenger.of(contextInUtilsFile).showSnackBar(snackBar);
   // });
 }
 
@@ -145,8 +148,10 @@ void showSnackbar(String text) {
 
 void loadFiles() {
   WidgetsBinding.instance.addPostFrameCallback((_) {
+    final currentMangaChapterIndex = refInUtilsFile.read(MangaReaderState.currentMangaChapterIndexProvider.state);
     MangaReaderState.loadSettings();
     Config.loadSettings();
+    MangaFileHandler.setMangaChapterIndex(currentMangaChapterIndex.state);
   });
 }
 

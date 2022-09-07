@@ -104,4 +104,19 @@ class MangaFileHandler {
       showSnackbar('No next chapter found!');
     }
   }
+
+  static void requestPreviousManga() {
+    final currentMangaChapterIndex = ref.read(MangaReaderState.currentMangaChapterIndexProvider.state);
+    final chaptersPaths = ref.read(MangaReaderState.chaptersPathsProvider.state);
+
+    if (chaptersPaths.state.isNotEmpty && currentMangaChapterIndex.state - 1 >= 0) {
+      currentMangaChapterIndex.state -= 1;
+      // printFromMangaReader(chaptersPaths.state[currentReadingChapterIndex]);
+      // printFromMangaReader(chaptersPaths.state);
+      setNewMangaChapter(chaptersPaths.state[currentMangaChapterIndex.state]);
+    } // Empty
+    else {
+      showSnackbar('No next chapter found!');
+    }
+  }
 }

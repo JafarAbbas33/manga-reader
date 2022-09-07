@@ -47,7 +47,7 @@ class MangaReaderState {
     // printFromMangaReader(t1.runtimeType);
 
     ref.read(chaptersPathsProvider.state).state = (jsonData["chaptersPaths"] as List).map((e) => e as String).toList();
-    ref.read(mangaImagesListProvider.state).state = (jsonData["mangaImagesList"] as List).map((e) => e as String).toList();
+    // ref.read(mangaImagesListProvider.state).state = (jsonData["mangaImagesList"] as List).map((e) => e as String).toList();
     // printFromMangaReader('Updating states state 2');
   }
 
@@ -55,7 +55,7 @@ class MangaReaderState {
     return {
       'currentMangaChapterIndex': ref.read(currentMangaChapterIndexProvider.state).state,
       'currentMangaTitle': ref.read(currentMangaTitleProvider.state).state,
-      'mangaImagesList': ref.read(mangaImagesListProvider.state).state,
+      // 'mangaImagesList': ref.read(mangaImagesListProvider.state).state,
       'chaptersPaths': ref.read(chaptersPathsProvider.state).state,
     };
   }
