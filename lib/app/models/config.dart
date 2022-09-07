@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_final_fields
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:manga_reader/utils.dart';
+import 'package:manga_reader/app/utils.dart';
 
 class Config {
   Config._();

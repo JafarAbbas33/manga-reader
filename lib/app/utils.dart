@@ -5,9 +5,9 @@ import 'package:archive/archive_io.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:manga_reader/config.dart';
-import 'package:manga_reader/manga_files_handler.dart';
-import 'package:manga_reader/manga_reader_state.dart';
+import 'package:manga_reader/app/models/config.dart';
+import 'package:manga_reader/app/models/manga_files_handler.dart';
+import 'package:manga_reader/app/models/manga_reader_state.dart';
 
 late BuildContext contextInUtilsFile;
 late WidgetRef refInUtilsFile;

@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:manga_reader/manga_reader_state.dart';
-import 'package:manga_reader/utils.dart';
+import 'package:manga_reader/app/utils.dart';
+import 'package:manga_reader/app/models/manga_reader_state.dart';
 
 class MangaFileHandler {
   static late WidgetRef ref;

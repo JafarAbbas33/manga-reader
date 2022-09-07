@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:manga_reader/home_page.dart';
-import 'package:manga_reader/utils.dart';
+import 'package:manga_reader/app/views/home_page.dart';
+import 'package:manga_reader/app/utils.dart';
 
 void main() {
   final container = ProviderContainer();

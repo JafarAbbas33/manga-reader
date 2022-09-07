@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_size_getter/image_size_getter.dart';
-import 'package:manga_reader/config.dart';
+import 'package:manga_reader/app/models/config.dart';
 
 class MangaImage extends HookConsumerWidget {
   const MangaImage({Key? key, required this.file, required this.maxWidth}) : super(key: key);
