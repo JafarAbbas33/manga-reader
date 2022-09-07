@@ -65,22 +65,22 @@ class MangaReaderState {
       printFromMangaReader('Saving state file...');
       return saveJsonFile('state.json', MangaReaderState.toJson());
     } catch (_) {
-      printFromMangaReader('Error while saving state file!'); //: $e');
+      showSnackbar('Error while saving state file!'); //: $e');
 
       return false;
     }
   }
 
   static void loadSettings() {
-    // try {
-    printFromMangaReader('Loading state file...');
-    Map<String, dynamic> data = loadJsonFile('state.json');
+    try {
+      printFromMangaReader('Loading state file...');
+      Map<String, dynamic> data = loadJsonFile('state.json');
 
-    (data.entries.isEmpty) ? printFromMangaReader('No state file found.') : MangaReaderState.fromJson(data);
-    // printFromMangaReader(MangaReaderState.toJson());
-    // } catch (_) {
-    //   printFromMangaReader('Error while loading state file!'); //: $e');
-    //   // rethrow;
-    // }
+      (data.entries.isEmpty) ? printFromMangaReader('No state file found.') : MangaReaderState.fromJson(data);
+      // printFromMangaReader(MangaReaderState.toJson());
+    } catch (_) {
+      showSnackbar('Error while loading state file!'); //: $e');
+      // rethrow;
+    }
   }
 }

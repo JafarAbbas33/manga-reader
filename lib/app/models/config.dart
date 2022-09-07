@@ -61,7 +61,7 @@ class Config {
       printFromMangaReader('Saving config file...');
       return saveJsonFile('config.json', Config.toJson());
     } catch (_) {
-      printFromMangaReader('Error while saving config file!'); //: $e');
+      showSnackbar('Error while saving config file!'); //: $e');
 
       return false;
     }
@@ -74,7 +74,7 @@ class Config {
       (data == <String, dynamic>{}) ? null : Config.fromJson(data);
       // printFromMangaReader(Config.toJson());
     } catch (_) {
-      printFromMangaReader('Error while loading config file!'); //: $e');
+      showSnackbar('Error while loading config file!'); //: $e');
     }
   }
 }
