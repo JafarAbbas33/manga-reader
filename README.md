@@ -1,16 +1,15 @@
-# manga_reader
+# Manga Reader - Flutter
 
-A new Flutter project.
+Have you ever wanted to scroll a manga or manhwa in vertical direction smoothly? I never found a decent lightweight continuous vertical scrollable manga or manhwa reader so I created my own.
 
-## Getting Started
+Features - 
 
-This project is a starting point for a Flutter application.
+* Can scroll continuous vertically.
+* Can open manga folder too as well as single chapters.
+* Drag and drop support.
+* Supports `zip`, `cbz` and `folder` as single chapter content data.
+* Can change scroll speed.
+* Easy navigation between manga chapters.
+* And much more is present and is upcoming.
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Any contribution is very welcome.
