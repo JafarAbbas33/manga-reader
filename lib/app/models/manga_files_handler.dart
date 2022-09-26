@@ -83,7 +83,7 @@ class MangaFileHandler {
       setNewMangaChapter(chaptersPaths.state[currentMangaChapterIndex.state]);
     } // Empty
     else {
-      printFromMangaReader('chaptersPaths.length ------------------------');
+      printFromMangaReader('${chaptersPaths.state.length} ------------------------');
       // printFromMangaReader(chaptersPaths.state.length);
       // requestNextManga();
       showSnackbar('Invalid request!');

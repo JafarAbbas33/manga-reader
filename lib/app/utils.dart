@@ -15,17 +15,23 @@ late WidgetRef refInUtilsFile;
 void printFromMangaReader(dynamic val) {
   // try {
   String out = '';
-  final re = RegExp(r'^#1[ \t]+.+:(?<line>[0-9]+):[0-9]+\)$', multiLine: true);
+  // final re = RegExp(r'^#1[ \t]+.+:(?<line>[0-9]+):[0-9]+\)$', multiLine: true); // Old reg which printed only line nos
+  final re = RegExp(r'^#1[ \t]+.+\/(?<file>.+):(?<line>[0-9]+):[0-9]+\)$', multiLine: true); // New reg which prints line nos with file names
   final match = re.firstMatch(StackTrace.current.toString());
 
   if (val is List) {
-    out = '---JDebug--- ${(match == null) ? -1 : int.parse(match.namedGroup('line')!)} ';
+    final String lineWithFile = '${(match == null) ? -1 : match.namedGroup('line')!} | ${(match == null) ? -1 : match.namedGroup('file')!}'.padRight(36);
+    out = '---JDebug--- $lineWithFile | ';
     for (dynamic element in val) {
       out += "$element ";
     }
   } //
   else {
-    out = "---JDebug--- ${(match == null) ? -1 : int.parse(match.namedGroup('line')!)} $val";
+    // out = '---JDebug--- ${(match == null) ? -1 : int.parse(match.namedGroup('line')!)} ';
+    final String lineWithFile = '${(match == null) ? -1 : match.namedGroup('line')!} | ${(match == null) ? -1 : match.namedGroup('file')!}'.padRight(36);
+    out = "---JDebug--- $lineWithFile | $val";
+    // out = "---JDebug--- ${(match == null) ? -1 : int.parse(match.namedGroup('line')!)} $val";
+    // out = '---JDebug--- ${StackTrace.current.toString()} ';
   } //
   debugPrint(out);
   // } catch (e) {

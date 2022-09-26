@@ -31,6 +31,8 @@ class MyHomePage extends HookConsumerWidget {
 
     for (int i = 0; i < imageList.length; ++i) {
       // printFromMangaReader(File(imageList[i]));
+      // printFromMangaReader(imageList[i]);
+      // printFromMangaReader('=' * 80);
       Size size = ImageSizeGetter.getSize(FileInput(File(imageList[i])));
       Size newSize = getNewSize(size, mangaImageSize);
 
