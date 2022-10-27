@@ -9,8 +9,6 @@ import 'package:manga_reader/app/models/config.dart';
 import 'package:manga_reader/app/models/manga_files_handler.dart';
 import 'package:manga_reader/app/models/manga_reader_state.dart';
 
-// TODO fix echo - add click list open - check efficieincy - fix chapter sorting
-
 late BuildContext contextInUtilsFile;
 late WidgetRef refInUtilsFile;
 
@@ -36,6 +34,7 @@ void echo(dynamic val) {
     // out = '---JDebug--- ${StackTrace.current.toString()} ';
   } //
   debugPrint(out);
+
   // } catch (e) {
   // return;
   // }
@@ -124,9 +123,53 @@ String extractMangaChapter(String path) {
 // =============================================================================================================================
 
 int lexSorter(String a, String b) {
-  int aInt = int.parse(a.split('/').last.replaceAll(RegExp(r'[^0-9]'), ''));
-  int bInt = int.parse(b.split('/').last.replaceAll(RegExp(r'[^0-9]'), ''));
-  return aInt.compareTo(bInt);
+  try {
+    // String aLast = a.split('/').last;
+
+    // var doubleRE = RegExp(r"-?(?:\d*\.)?\d+(?:[eE][+-]?\d+)?");
+    // var numbers = doubleRE.allMatches(aLast).map((m) => double.parse(m[0]!)).toList();
+    // if (a.contains('39.5') || b.contains('39.5')) echo(['@', numbers]);
+
+    // String aReped = aLast.replaceAll(RegExp(r"-?(?:\d*\.)?\d+(?:[eE][+-]?\d+)?"), '');
+    // // if (a.contains('39.5') || b.contains('39.5')) echo(['@', aReped]);
+    // double aInt = double.parse(aReped);
+
+    // String bLast = b.split('/').last;
+
+    // String bReped = bLast.replaceAll(RegExp(r"-?(?:\d*\.)?\d+(?:[eE][+-]?\d+)?"), '');
+
+    // if (a.contains('39.5') || b.contains('39.5')) echo(['@', aReped, bReped]);
+    // // echo(['@', a]);
+    // double bInt = double.parse(bReped);
+
+    // if (aInt > bInt) {
+    //   return 1;
+    // } else {
+    //   return -1;
+    // }
+
+    var doubleRE = RegExp(r"-?(?:\d*\.)?\d+(?:[eE][+-]?\d+)?");
+
+    String aLast = a.split('/').last;
+    double aInt = doubleRE.allMatches(aLast).map((m) => double.parse(m[0]!)).toList()[0];
+    // if (a.contains('39.5') || b.contains('39.5')) echo(['@', aInt]);
+
+    String bLast = b.split('/').last;
+    double bInt = doubleRE.allMatches(bLast).map((m) => double.parse(m[0]!)).toList()[0];
+    if (a.contains('39.5') || b.contains('39.5')) echo(['@', aInt, bInt]);
+
+    if (aInt > bInt) {
+      return 1;
+    } else {
+      return -1;
+    }
+    // int aInt = int.parse(a.split('/').last.replaceAll(RegExp(r'[^0-9]'), ''));
+    // int bInt = int.parse(b.split('/').last.replaceAll(RegExp(r'[^0-9]'), ''));
+    // return aInt.compareTo(bInt);
+  } catch (_) {
+    // echo(['@', '#################', a]);
+    return 1;
+  }
 }
 
 // =============================================================================================================================

@@ -50,7 +50,7 @@ class MyHomePage extends HookConsumerWidget {
     MangaReaderState.ref = ref;
     Config.ref = ref;
 
-    debugPrint('Building home page...');
+    echo('Building home page...');
 
     ScrollController scrollController = useScrollController();
 
@@ -88,6 +88,7 @@ class MyHomePage extends HookConsumerWidget {
             )
           : null,
       backgroundColor: Colors.black,
+      drawer: const _Drawer(),
       appBar: (!fullScreen.state) ? const MangaReaderAppBar().build(context, ref) : null,
       body: DropTarget(
         onDragEntered: (details) {
@@ -208,6 +209,45 @@ class _DragAndDropDialogOptions extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _Drawer extends ConsumerWidget {
+  const _Drawer();
+
+  @override
+  Widget build(BuildContext context, ref) {
+    final chaptersPaths = ref.read(MangaReaderState.chaptersPathsProvider.state).state;
+
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          const ColoredBox(
+            color: Colors.blue,
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 30, horizontal: 10),
+              child: Text('Select chapter to open'),
+            ),
+          ),
+          ...chaptersPaths.map((e) => ListTile(
+                title: Text(e.split('/').last.replaceAll('.cbz', '').replaceAll('.zip', '')),
+                // tileColor: (MangaFileHandler.currentMangaChapterPath == e) ? Colors.blue : null,
+                onTap: () {
+                  MangaFileHandler.setMangaChapterIndex(chaptersPaths.indexOf(e));
+                },
+              )),
+
+          // ListTile(
+          //   title: const Text('Item 2'),
+          //   onTap: () {
+          //     // Update the state of the app.
+          //     // ...
+          //   },
+          // ),
+        ],
       ),
     );
   }

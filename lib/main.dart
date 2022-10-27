@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:manga_reader/app/models/config.dart';
 import 'package:manga_reader/app/models/manga_reader_state.dart';
 import 'package:manga_reader/app/views/home_page.dart';
 import 'package:manga_reader/app/utils.dart';

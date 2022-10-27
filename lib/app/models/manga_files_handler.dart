@@ -30,8 +30,7 @@ class MangaFileHandler {
   }
 
   static void setNewMangaChapter(String path) {
-    final currentMangaChapterIndex = ref.read(MangaReaderState.currentMangaChapterIndexProvider.state);
-    echo(currentMangaChapterIndex.state);
+    // final currentMangaChapterIndex = ref.read(MangaReaderState.currentMangaChapterIndexProvider.state);
     // final chaptersPaths = ref.read(MangaReaderState.chaptersPathsProvider.state);
     // chaptersPaths.state = [];
     // Check if current manga chapter is Directory
@@ -57,7 +56,9 @@ class MangaFileHandler {
     final chaptersPaths = ref.read(MangaReaderState.chaptersPathsProvider.state);
 
     List<FileSystemEntity> directoryList = Directory(path).listSync();
+
     chaptersPaths.state = directoryList.map((item) => item.path).toList();
+    // echo(['@', chaptersPaths.state]);
 
     chaptersPaths.state.sort((a, b) => lexSorter(a, b));
 
