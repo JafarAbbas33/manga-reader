@@ -9,10 +9,12 @@ import 'package:manga_reader/app/models/config.dart';
 import 'package:manga_reader/app/models/manga_files_handler.dart';
 import 'package:manga_reader/app/models/manga_reader_state.dart';
 
+// TODO fix echo - add click list open - check efficieincy - fix chapter sorting
+
 late BuildContext contextInUtilsFile;
 late WidgetRef refInUtilsFile;
 
-void printFromMangaReader(dynamic val) {
+void echo(dynamic val) {
   // try {
   String out = '';
   // final re = RegExp(r'^#1[ \t]+.+:(?<line>[0-9]+):[0-9]+\)$', multiLine: true); // Old reg which printed only line nos
@@ -50,21 +52,21 @@ String getPrettyJSONString(jsonObject) {
 // =============================================================================================================================
 
 bool saveJsonFile(String filePath, Map<String, dynamic> data) {
-  printFromMangaReader('Writing json file...');
+  echo('Writing json file...');
 
   final file = File(filePath);
   if (file.existsSync()) {
     file.createSync(recursive: true);
   }
 
-  // printFromMangaReader(data);
+  // echo(data);
 
   String jsonString = getPrettyJSONString(data);
   try {
     file.writeAsStringSync(jsonString);
     return true;
   } catch (_, e) {
-    printFromMangaReader(e);
+    echo(e);
     return false;
   }
 }
@@ -72,7 +74,7 @@ bool saveJsonFile(String filePath, Map<String, dynamic> data) {
 // =============================================================================================================================
 
 Map<String, dynamic> loadJsonFile(String filePath) {
-  printFromMangaReader('Reading json file...');
+  echo('Reading json file...');
 
   final file = File(filePath);
   if (!file.existsSync()) {
@@ -81,11 +83,11 @@ Map<String, dynamic> loadJsonFile(String filePath) {
 
   try {
     String data = file.readAsStringSync();
-    // printFromMangaReader(data);
+    // echo(data);
 
     return jsonDecode(data);
   } catch (_, e) {
-    printFromMangaReader(e);
+    echo(e);
 
     return {};
   }
@@ -114,7 +116,7 @@ String extractMangaChapter(String path) {
     }
     return targetDir;
   } else {
-    printFromMangaReader(path);
+    echo(path);
     throw Exception('File type not supported!');
   }
 }
@@ -169,5 +171,22 @@ void saveFiles() {
     Config.saveSettings();
   });
 }
+
+// =============================================================================================================================
+
+void loadFromArguments() {
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    final args = MangaReaderState.arguments;
+    if (args.length < 2) return;
+
+    if (args.contains('--directory')) {
+      MangaFileHandler.setNewMangaDirectory(args.last);
+    } else if (args.contains('--chapter')) {
+      MangaFileHandler.setNewMangaChapter(args.last);
+    }
+  });
+}
+
+// =============================================================================================================================
 
 // =============================================================================================================================

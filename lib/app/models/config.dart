@@ -58,7 +58,7 @@ class Config {
 
   static bool saveSettings() {
     try {
-      printFromMangaReader('Saving config file...');
+      echo('Saving config file...');
       return saveJsonFile('config.json', Config.toJson());
     } catch (_) {
       showSnackbar('Error while saving config file!'); //: $e');
@@ -69,10 +69,10 @@ class Config {
 
   static void loadSettings() {
     try {
-      printFromMangaReader('Loading config file...');
+      echo('Loading config file...');
       Map<String, dynamic> data = loadJsonFile('config.json');
       (data == <String, dynamic>{}) ? null : Config.fromJson(data);
-      // printFromMangaReader(Config.toJson());
+      // echo(Config.toJson());
     } catch (_) {
       showSnackbar('Error while loading config file!'); //: $e');
     }

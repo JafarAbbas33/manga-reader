@@ -30,9 +30,9 @@ class MyHomePage extends HookConsumerWidget {
     int max = 999990;
 
     for (int i = 0; i < imageList.length; ++i) {
-      // printFromMangaReader(File(imageList[i]));
-      // printFromMangaReader(imageList[i]);
-      // printFromMangaReader('=' * 80);
+      // echo(File(imageList[i]));
+      // echo(imageList[i]);
+      // echo('=' * 80);
       Size size = ImageSizeGetter.getSize(FileInput(File(imageList[i])));
       Size newSize = getNewSize(size, mangaImageSize);
 
@@ -61,7 +61,7 @@ class MyHomePage extends HookConsumerWidget {
 
     bool dragAndDropDialogOpen = false;
 
-    // printFromMangaReader(imageList.state);
+    // echo(imageList.state);
 
     useEffect(
       () {
@@ -91,7 +91,7 @@ class MyHomePage extends HookConsumerWidget {
       appBar: (!fullScreen.state) ? const MangaReaderAppBar().build(context, ref) : null,
       body: DropTarget(
         onDragEntered: (details) {
-          // printFromMangaReader('Opening drag & Drop...');
+          // echo('Opening drag & Drop...');
 
           if (!dragAndDropDialogOpen) {
             showDialog(
@@ -104,7 +104,7 @@ class MyHomePage extends HookConsumerWidget {
         },
         onDragExited: (details) {
           if (dragAndDropDialogOpen) {
-            // printFromMangaReader('Closing drag & Drop...');
+            // echo('Closing drag & Drop...');
             Navigator.of(context).pop();
             dragAndDropDialogOpen = false;
           }
@@ -112,16 +112,16 @@ class MyHomePage extends HookConsumerWidget {
         onDragDone: (detail) {
           String path = detail.files[0].path;
           if (detail.localPosition.dx < MediaQuery.of(context).size.width / 2) {
-            printFromMangaReader('Dropped on left side! Setting new manga chapter...');
+            echo('Dropped on left side! Setting new manga chapter...');
             MangaFileHandler.setNewMangaChapter(path);
           } //
           else {
-            printFromMangaReader('Dropped on right side! Setting new manga directory...');
+            echo('Dropped on right side! Setting new manga directory...');
             MangaFileHandler.setNewMangaDirectory(path);
           }
-          // printFromMangaReader('${MediaQuery.of(context).size.width}||${detail.localPosition.dx}');
+          // echo('${MediaQuery.of(context).size.width}||${detail.localPosition.dx}');
 
-          printFromMangaReader('Drag done. Closing drag & Drop...');
+          echo('Drag done. Closing drag & Drop...');
         },
         child: (imageList.state.isEmpty)
             ? const Align(
@@ -144,7 +144,7 @@ class MyHomePage extends HookConsumerWidget {
                 // padding: EdgeInsets.zero,
                 children: [
                   ...imageList.state.map((e) {
-                    // printFromMangaReader('Loading: $e');
+                    // echo('Loading: $e');
                     return MangaImage(file: File(e), maxWidth: maxWidth);
                   }).toList(),
                 ],

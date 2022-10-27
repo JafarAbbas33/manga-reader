@@ -31,7 +31,7 @@ class MangaFileHandler {
 
   static void setNewMangaChapter(String path) {
     final currentMangaChapterIndex = ref.read(MangaReaderState.currentMangaChapterIndexProvider.state);
-    printFromMangaReader(currentMangaChapterIndex.state);
+    echo(currentMangaChapterIndex.state);
     // final chaptersPaths = ref.read(MangaReaderState.chaptersPathsProvider.state);
     // chaptersPaths.state = [];
     // Check if current manga chapter is Directory
@@ -61,15 +61,15 @@ class MangaFileHandler {
 
     chaptersPaths.state.sort((a, b) => lexSorter(a, b));
 
-    // printFromMangaReader('0' * 80);
+    // echo('0' * 80);
     // for (String element in chaptersPaths.state) {
-    //   printFromMangaReader(element);
+    //   echo(element);
     // }
 
     currentMangaChapterIndex.state = 0;
 
-    // printFromMangaReader('chaptersPaths.length ------------------------ 0');
-    // printFromMangaReader(chaptersPaths.state.length);
+    // echo('chaptersPaths.length ------------------------ 0');
+    // echo(chaptersPaths.state.length);
 
     setNewMangaChapter(chaptersPaths.state[currentMangaChapterIndex.state]);
   }
@@ -83,8 +83,8 @@ class MangaFileHandler {
       setNewMangaChapter(chaptersPaths.state[currentMangaChapterIndex.state]);
     } // Empty
     else {
-      printFromMangaReader('${chaptersPaths.state.length} ------------------------');
-      // printFromMangaReader(chaptersPaths.state.length);
+      echo('${chaptersPaths.state.length} ------------------------');
+      // echo(chaptersPaths.state.length);
       // requestNextManga();
       showSnackbar('Invalid request!');
     }
@@ -96,8 +96,8 @@ class MangaFileHandler {
 
     if (chaptersPaths.state.isNotEmpty && currentMangaChapterIndex.state < chaptersPaths.state.length) {
       currentMangaChapterIndex.state += 1;
-      // printFromMangaReader(chaptersPaths.state[currentReadingChapterIndex]);
-      // printFromMangaReader(chaptersPaths.state);
+      // echo(chaptersPaths.state[currentReadingChapterIndex]);
+      // echo(chaptersPaths.state);
       setNewMangaChapter(chaptersPaths.state[currentMangaChapterIndex.state]);
     } // Empty
     else {
@@ -111,8 +111,8 @@ class MangaFileHandler {
 
     if (chaptersPaths.state.isNotEmpty && currentMangaChapterIndex.state - 1 >= 0) {
       currentMangaChapterIndex.state -= 1;
-      // printFromMangaReader(chaptersPaths.state[currentReadingChapterIndex]);
-      // printFromMangaReader(chaptersPaths.state);
+      // echo(chaptersPaths.state[currentReadingChapterIndex]);
+      // echo(chaptersPaths.state);
       setNewMangaChapter(chaptersPaths.state[currentMangaChapterIndex.state]);
     } // Empty
     else {

@@ -33,7 +33,7 @@ class MangaReaderAppBar extends HookConsumerWidget {
       //     ClipboardData? data = await Clipboard.getData(Clipboard.kTextPlain);
       //     String path = data?.text ?? '';
 
-      //     printFromMangaReader('===========' * 80);
+      //     echo('===========' * 80);
       //     // String path = '/home/jafarabbas33/Documents/Tachiyomi Mangas/MangaDex (EN)/Regina Rena – To the Unforgiven';
       //     // String path = '/tmp/manga_reader/Destiny Scans_Ch.1.cbz';
       //     // String path = '/tmp/manga_reader/Flame Scans_Ch.21.cbz';

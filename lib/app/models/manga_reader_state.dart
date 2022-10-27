@@ -7,6 +7,7 @@ class MangaReaderState {
   MangaReaderState._();
 
   static late WidgetRef ref;
+  static List<String> arguments = [];
 
   static const String _currentMangaTitle = 'Manga Reader';
   static final currentMangaTitleProvider = StateProvider((ref) {
@@ -31,24 +32,24 @@ class MangaReaderState {
 // =============================================================================================================================
 
   static void fromJson(Map<String, dynamic> jsonData) {
-    // printFromMangaReader(jsonData);
-    // printFromMangaReader(jsonData.runtimeType);
+    // echo(jsonData);
+    // echo(jsonData.runtimeType);
 
-    // printFromMangaReader('Updating states state 0');
+    // echo('Updating states state 0');
     ref.read(currentMangaChapterIndexProvider.state).state = jsonData['currentMangaChapterIndex'];
     ref.read(currentMangaTitleProvider.state).state = jsonData['currentMangaTitle'];
-    // printFromMangaReader('Updating states state 1');
+    // echo('Updating states state 1');
 
-    printFromMangaReader('Printing...');
+    echo('Printing...');
     // var t = jsonData['mangaImagesList'].map((item) => item.toString()).toList(); // as List<String>;
 
     // final t1 = (;
 
-    // printFromMangaReader(t1.runtimeType);
+    // echo(t1.runtimeType);
 
     ref.read(chaptersPathsProvider.state).state = (jsonData["chaptersPaths"] as List).map((e) => e as String).toList();
     // ref.read(mangaImagesListProvider.state).state = (jsonData["mangaImagesList"] as List).map((e) => e as String).toList();
-    // printFromMangaReader('Updating states state 2');
+    // echo('Updating states state 2');
   }
 
   static Map<String, dynamic> toJson() {
@@ -62,7 +63,7 @@ class MangaReaderState {
 
   static bool saveSettings() {
     try {
-      printFromMangaReader('Saving state file...');
+      echo('Saving state file...');
       return saveJsonFile('state.json', MangaReaderState.toJson());
     } catch (_) {
       showSnackbar('Error while saving state file!'); //: $e');
@@ -73,11 +74,11 @@ class MangaReaderState {
 
   static void loadSettings() {
     try {
-      printFromMangaReader('Loading state file...');
+      echo('Loading state file...');
       Map<String, dynamic> data = loadJsonFile('state.json');
 
-      (data.entries.isEmpty) ? printFromMangaReader('No state file found.') : MangaReaderState.fromJson(data);
-      // printFromMangaReader(MangaReaderState.toJson());
+      (data.entries.isEmpty) ? echo('No state file found.') : MangaReaderState.fromJson(data);
+      // echo(MangaReaderState.toJson());
     } catch (_) {
       showSnackbar('Error while loading state file!'); //: $e');
       // rethrow;

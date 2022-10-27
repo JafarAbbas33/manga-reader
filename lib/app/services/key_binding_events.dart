@@ -23,7 +23,7 @@ void bindKeys(final window, final WidgetRef ref, ScrollController scrollControll
 
     // 'space' or 'down' pressed
     if ((keyData.logical == LogicalKeyboardKey.space.keyId || keyData.logical == LogicalKeyboardKey.arrowDown.keyId) && keyData.type == KeyEventType.down) {
-      // printFromMangaReader([scrollController.position.pixels, '||', scrollController.position.maxScrollExtent]);
+      // echo([scrollController.position.pixels, '||', scrollController.position.maxScrollExtent]);
       if (scrollController.position.pixels == scrollController.position.maxScrollExtent) {
         if (noOfTimesSpaceClicked >= timesRequiredToClickSpaceBeforeOpenningNewManga.state) {
           showSnackbar('Opening next manga...');
@@ -38,7 +38,7 @@ void bindKeys(final window, final WidgetRef ref, ScrollController scrollControll
                   });
         }
         noOfTimesSpaceClicked += 1;
-        printFromMangaReader('Click ${timesRequiredToClickSpaceBeforeOpenningNewManga.state - noOfTimesSpaceClicked + 1} next manga...');
+        echo('Click ${timesRequiredToClickSpaceBeforeOpenningNewManga.state - noOfTimesSpaceClicked + 1} next manga...');
       }
       scrollController.animateTo(scrollController.position.pixels + scrollSpeed.state, duration: const Duration(milliseconds: 500), curve: Curves.fastOutSlowIn);
       return true;
@@ -65,7 +65,7 @@ void bindKeys(final window, final WidgetRef ref, ScrollController scrollControll
                 });
       }
       noOfTimesRightClicked += 1;
-      printFromMangaReader('Click ${timesRequiredToClickSpaceBeforeOpenningNewManga.state - noOfTimesRightClicked + 1} next manga...');
+      echo('Click ${timesRequiredToClickSpaceBeforeOpenningNewManga.state - noOfTimesRightClicked + 1} next manga...');
 
       return true;
     }
@@ -85,7 +85,7 @@ void bindKeys(final window, final WidgetRef ref, ScrollController scrollControll
                 });
       }
       noOfTimesLeftClicked += 1;
-      printFromMangaReader('Click ${timesRequiredToClickSpaceBeforeOpenningNewManga.state - noOfTimesLeftClicked + 1} previous manga...');
+      echo('Click ${timesRequiredToClickSpaceBeforeOpenningNewManga.state - noOfTimesLeftClicked + 1} previous manga...');
 
       return true;
     }
