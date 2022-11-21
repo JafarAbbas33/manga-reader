@@ -23,6 +23,8 @@ class MangaFileHandler {
 
     imageList.sort((a, b) => lexSorter(a, b));
 
+    MangaReaderState.imagesCached = 0;
+
     currentMangaTitle.state = path.split('/').last.replaceAll('.cbz', '').replaceAll('.zip', '');
     mangaImagesList.state = imageList;
 
@@ -58,6 +60,8 @@ class MangaFileHandler {
     List<FileSystemEntity> directoryList = Directory(path).listSync();
 
     chaptersPaths.state = directoryList.map((item) => item.path).toList();
+
+    // chaptersPaths.state.removeWhere((element) => !element.contains('.cbz') || !element.contains('.zip') || !element.contains('.cbz')))
     // echo(['@', chaptersPaths.state]);
 
     chaptersPaths.state.sort((a, b) => lexSorter(a, b));

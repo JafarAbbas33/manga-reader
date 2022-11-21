@@ -8,6 +8,7 @@ class MangaReaderState {
 
   static late WidgetRef ref;
   static List<String> arguments = [];
+  static int imagesCached = 0;
 
   static const String _currentMangaTitle = 'Manga Reader';
   static final currentMangaTitleProvider = StateProvider((ref) {

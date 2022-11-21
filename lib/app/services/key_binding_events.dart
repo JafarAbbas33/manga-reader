@@ -12,6 +12,7 @@ void bindKeys(final window, final WidgetRef ref, ScrollController scrollControll
   int noOfTimesSpaceClicked = 0;
   int noOfTimesRightClicked = 0;
   int noOfTimesLeftClicked = 0;
+
   final fullScreen = ref.watch(Config.fullScreenProvider.state);
   final scrollSpeed = ref.read(Config.scrollSpeedProvider.state);
   final fasterScrollSpeed = ref.read(Config.fasterScrollSpeedProvider.state);
@@ -84,6 +85,7 @@ void bindKeys(final window, final WidgetRef ref, ScrollController scrollControll
                   })
                 });
       }
+
       noOfTimesLeftClicked += 1;
       echo('Click ${timesRequiredToClickSpaceBeforeOpenningNewManga.state - noOfTimesLeftClicked + 1} previous manga...');
 
@@ -92,14 +94,16 @@ void bindKeys(final window, final WidgetRef ref, ScrollController scrollControll
 
     // 'page down' pressed
     else if (keyData.logical == 4294968071 && keyData.type == KeyEventType.down) {
-      scrollController.animateTo(scrollController.position.pixels + fasterScrollSpeed.state, duration: const Duration(milliseconds: 300), curve: Curves.fastOutSlowIn);
+      // scrollController.animateTo(scrollController.position.pixels + fasterScrollSpeed.state, duration: const Duration(milliseconds: 300), curve: Curves.fastOutSlowIn);
+      scrollController.jumpTo(scrollController.position.pixels + fasterScrollSpeed.state);
 
       return true;
     }
 
     // 'page up' pressed
     else if (keyData.logical == 4294968072 && keyData.type == KeyEventType.down) {
-      scrollController.animateTo(scrollController.position.pixels - fasterScrollSpeed.state, duration: const Duration(milliseconds: 300), curve: Curves.fastOutSlowIn);
+      // scrollController.animateTo(scrollController.position.pixels - fasterScrollSpeed.state, duration: const Duration(milliseconds: 300), curve: Curves.fastOutSlowIn);
+      scrollController.jumpTo(scrollController.position.pixels - fasterScrollSpeed.state);
 
       return true;
     }

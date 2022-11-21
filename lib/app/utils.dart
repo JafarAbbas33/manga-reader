@@ -156,7 +156,7 @@ int lexSorter(String a, String b) {
 
     String bLast = b.split('/').last;
     double bInt = doubleRE.allMatches(bLast).map((m) => double.parse(m[0]!)).toList()[0];
-    if (a.contains('39.5') || b.contains('39.5')) echo(['@', aInt, bInt]);
+    // if (a.contains('39.5') || b.contains('39.5')) echo(['@', aInt, bInt]);
 
     if (aInt > bInt) {
       return 1;
@@ -222,10 +222,13 @@ void loadFromArguments() {
     final args = MangaReaderState.arguments;
     if (args.length < 2) return;
 
+    String path = args.last.replaceFirst('file://', '').replaceAll('%20', ' ');
+    echo([' ***************** Path:\n', path]);
+
     if (args.contains('--directory')) {
-      MangaFileHandler.setNewMangaDirectory(args.last);
+      MangaFileHandler.setNewMangaDirectory(path);
     } else if (args.contains('--chapter')) {
-      MangaFileHandler.setNewMangaChapter(args.last);
+      MangaFileHandler.setNewMangaChapter(path);
     }
   });
 }

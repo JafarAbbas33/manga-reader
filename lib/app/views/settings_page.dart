@@ -87,6 +87,9 @@ class SettingsDialog extends HookConsumerWidget {
               ),
 
               const Divider(thickness: 2),
+              const Text('Version: 2.1'),
+
+              const Divider(thickness: 2),
               const SizedBox(height: 40),
             ],
           ),
